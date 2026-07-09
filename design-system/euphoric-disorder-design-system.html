@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Euphoric Disorder — Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   EUPHORIC DISORDER — DESIGN TOKENS  (Palette: "Neon Evidence")
+   ===================================================================== */
+:root{
+  /* --- Color: base --- */
+  --ed-ink:#0A0A0F;          /* background utama */
+  --ed-charcoal:#15151E;     /* surface / kartu */
+  --ed-charcoal-2:#1E1E2A;   /* surface elevated */
+  --ed-line:#2A2A38;         /* border / divider */
+  --ed-bone:#EDE7D8;         /* teks utama */
+  --ed-bone-dim:#9A948A;     /* teks sekunder / muted */
+
+  /* --- Color: accents --- */
+  --ed-violet:#8B3DFF;       /* aksen utama */
+  --ed-magenta:#FF2D9B;      /* aksen glow / hover */
+  --ed-acid:#CDFF3E;         /* CTA punch */
+  --ed-red:#FF3B30;          /* status: sold / caution */
+  --ed-grad:linear-gradient(135deg,#8B3DFF 0%,#FF2D9B 100%);
+  --ed-glow:0 0 24px rgba(139,61,255,.45), 0 0 48px rgba(255,45,155,.25);
+
+  /* --- Typography --- */
+  --ed-font-display:"Anton",system-ui,sans-serif;
+  --ed-font-heading:"Archivo Black",system-ui,sans-serif;
+  --ed-font-body:"Inter",system-ui,sans-serif;
+  --ed-font-mono:"Space Mono",ui-monospace,monospace;
+
+  /* --- Spacing (8pt) --- */
+  --ed-s1:4px; --ed-s2:8px; --ed-s3:12px; --ed-s4:16px; --ed-s5:24px;
+  --ed-s6:32px; --ed-s7:48px; --ed-s8:64px; --ed-s9:96px; --ed-s10:128px;
+
+  /* --- Radius --- */
+  --ed-r-sm:4px; --ed-r-md:8px; --ed-r-lg:16px; --ed-r-pill:999px;
+
+  /* --- Motion --- */
+  --ed-ease:cubic-bezier(.22,1,.36,1);
+  --ed-dur-fast:180ms; --ed-dur:360ms; --ed-dur-slow:700ms;
+
+  /* --- Layout --- */
+  --ed-maxw:1200px;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--ed-ink);color:var(--ed-bone);
+  font-family:var(--ed-font-body);font-size:16px;line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+a{color:inherit}
+.wrap{max-width:var(--ed-maxw);margin:0 auto;padding:0 var(--ed-s5)}
+.mono{font-family:var(--ed-font-mono);text-transform:uppercase;letter-spacing:.18em;font-size:12px;color:var(--ed-bone-dim)}
+.section{padding:var(--ed-s9) 0;border-top:1px solid var(--ed-line)}
+.section:first-of-type{border-top:0}
+.eyebrow{font-family:var(--ed-font-mono);text-transform:uppercase;letter-spacing:.28em;font-size:12px;color:var(--ed-magenta);margin:0 0 var(--ed-s3)}
+h2.sect{font-family:var(--ed-font-display);font-weight:400;text-transform:uppercase;font-size:clamp(2.4rem,6vw,4.5rem);line-height:.92;letter-spacing:.01em;margin:0 0 var(--ed-s5)}
+.lead{color:var(--ed-bone-dim);max-width:60ch;margin:0 0 var(--ed-s7)}
+.grid{display:grid;gap:var(--ed-s5)}
+.note{font-size:13px;color:var(--ed-bone-dim)}
+.tag-do{color:var(--ed-acid)} .tag-dont{color:var(--ed-red)}
+
+/* ---- HERO of the doc ---- */
+.doc-hero{position:relative;padding:var(--ed-s10) 0 var(--ed-s9);overflow:hidden}
+.doc-hero:before{content:"";position:absolute;inset:-40% -10% auto auto;width:60vw;height:60vw;
+  background:radial-gradient(circle,rgba(139,61,255,.35),transparent 60%);filter:blur(30px);z-index:0}
+.doc-hero .wrap{position:relative;z-index:1}
+.doc-title{font-family:var(--ed-font-display);font-weight:400;text-transform:uppercase;
+  font-size:clamp(3rem,12vw,9rem);line-height:.86;letter-spacing:.005em;margin:var(--ed-s4) 0}
+.doc-title span{background:var(--ed-grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.doc-meta{display:flex;gap:var(--ed-s5);flex-wrap:wrap;margin-top:var(--ed-s6)}
+.doc-meta div{border:1px solid var(--ed-line);border-radius:var(--ed-r-md);padding:var(--ed-s3) var(--ed-s4)}
+.doc-meta b{display:block;font-family:var(--ed-font-mono);color:var(--ed-bone)}
+
+/* ---- swatches ---- */
+.swatches{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.sw{border:1px solid var(--ed-line);border-radius:var(--ed-r-md);overflow:hidden;background:var(--ed-charcoal)}
+.sw .chip{height:96px}
+.sw .meta{padding:var(--ed-s3) var(--ed-s4)}
+.sw .name{font-family:var(--ed-font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.12em}
+.sw .hex{font-family:var(--ed-font-mono);font-size:12px;color:var(--ed-bone-dim)}
+.sw .role{font-size:12px;color:var(--ed-bone-dim);margin-top:2px}
+
+/* ---- type specimens ---- */
+.spec{border:1px solid var(--ed-line);border-radius:var(--ed-r-md);padding:var(--ed-s5);margin-bottom:var(--ed-s4);background:var(--ed-charcoal)}
+.spec .label{display:flex;justify-content:space-between;flex-wrap:wrap;gap:var(--ed-s3);margin-bottom:var(--ed-s3)}
+.t-display{font-family:var(--ed-font-display);font-weight:400;text-transform:uppercase;font-size:64px;line-height:.9}
+.t-h1{font-family:var(--ed-font-display);font-weight:400;text-transform:uppercase;font-size:48px;line-height:.95}
+.t-h3{font-family:var(--ed-font-heading);font-size:28px;line-height:1.1}
+.t-body{font-family:var(--ed-font-body);font-size:18px;line-height:1.6}
+.t-mono{font-family:var(--ed-font-mono);text-transform:uppercase;letter-spacing:.2em;font-size:13px}
+
+/* ---- scale table ---- */
+table.scale{width:100%;border-collapse:collapse;font-size:14px}
+table.scale th,table.scale td{text-align:left;padding:var(--ed-s3) var(--ed-s4);border-bottom:1px solid var(--ed-line)}
+table.scale th{font-family:var(--ed-font-mono);text-transform:uppercase;font-size:11px;letter-spacing:.14em;color:var(--ed-bone-dim)}
+table.scale td.fam{font-family:var(--ed-font-mono);color:var(--ed-violet)}
+
+/* ---- spacing viz ---- */
+.space-row{display:flex;align-items:center;gap:var(--ed-s4);margin-bottom:var(--ed-s2)}
+.space-bar{background:var(--ed-grad);height:16px;border-radius:2px}
+.space-row .mono{min-width:120px}
+
+/* =====================================================================
+   COMPONENTS  (production-ready styles)
+   ===================================================================== */
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:var(--ed-s2);font-family:var(--ed-font-mono);
+  text-transform:uppercase;letter-spacing:.14em;font-size:13px;font-weight:700;cursor:pointer;
+  padding:14px 24px;border-radius:var(--ed-r-pill);border:1px solid transparent;text-decoration:none;
+  transition:transform var(--ed-dur-fast) var(--ed-ease),box-shadow var(--ed-dur) var(--ed-ease),background var(--ed-dur)}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--ed-acid);color:var(--ed-ink)}
+.btn-primary:hover{box-shadow:0 8px 30px rgba(205,255,62,.35)}
+.btn-secondary{background:transparent;color:var(--ed-bone);border-color:var(--ed-line)}
+.btn-secondary:hover{border-color:var(--ed-bone);box-shadow:var(--ed-glow)}
+.btn-neon{background:var(--ed-grad);color:#fff}
+.btn-neon:hover{box-shadow:var(--ed-glow)}
+.btn-wa{background:var(--ed-charcoal-2);color:var(--ed-bone);border-color:var(--ed-line)}
+.btn-wa .dot{width:8px;height:8px;border-radius:50%;background:#25D366;box-shadow:0 0 8px #25D366}
+.btn-wa:hover{border-color:#25D366}
+
+/* Navbar */
+.navbar{display:flex;align-items:center;justify-content:space-between;
+  padding:var(--ed-s4) var(--ed-s5);border:1px solid var(--ed-line);border-radius:var(--ed-r-lg);
+  background:rgba(21,21,30,.7);backdrop-filter:blur(10px)}
+.navbar .logo{font-family:var(--ed-font-display);text-transform:uppercase;font-size:22px;line-height:.9}
+.navbar .logo small{display:block;font-size:11px;letter-spacing:.35em;color:var(--ed-magenta)}
+.nav-right{display:flex;align-items:center;gap:var(--ed-s3)}
+.icon-btn{width:46px;height:46px;border-radius:var(--ed-r-md);border:1px solid var(--ed-line);
+  background:var(--ed-charcoal-2);display:grid;place-items:center;cursor:pointer;gap:4px}
+.icon-btn span{display:block;width:18px;height:2px;background:var(--ed-bone)}
+
+/* Slide-in nav */
+.slidein{border:1px solid var(--ed-line);border-radius:var(--ed-r-lg);background:var(--ed-charcoal);
+  padding:var(--ed-s7);margin-top:var(--ed-s4)}
+.slidein a{display:flex;align-items:baseline;gap:var(--ed-s4);text-decoration:none;
+  font-family:var(--ed-font-display);text-transform:uppercase;font-size:clamp(2rem,6vw,3.4rem);
+  line-height:1.05;color:var(--ed-bone);transition:color var(--ed-dur),transform var(--ed-dur) var(--ed-ease)}
+.slidein a:hover{color:var(--ed-magenta);transform:translateX(10px)}
+.slidein a i{font-family:var(--ed-font-mono);font-style:normal;font-size:13px;color:var(--ed-bone-dim)}
+
+/* Product "Case Card" */
+.cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.case-card{border:1px solid var(--ed-line);border-radius:var(--ed-r-lg);overflow:hidden;background:var(--ed-charcoal);
+  transition:transform var(--ed-dur) var(--ed-ease),box-shadow var(--ed-dur)}
+.case-card:hover{transform:translateY(-6px);box-shadow:var(--ed-glow);border-color:var(--ed-violet)}
+.case-card .thumb{aspect-ratio:4/5;background:
+  radial-gradient(circle at 50% 40%,rgba(139,61,255,.35),transparent 55%),var(--ed-charcoal-2);
+  position:relative;display:grid;place-items:center}
+.case-card .thumb .ph{font-family:var(--ed-font-mono);font-size:11px;color:var(--ed-bone-dim);letter-spacing:.2em}
+.case-card .no{position:absolute;top:12px;left:12px;font-family:var(--ed-font-mono);font-size:11px;color:var(--ed-bone-dim);letter-spacing:.14em}
+.case-card .body{padding:var(--ed-s4)}
+.case-card h4{font-family:var(--ed-font-heading);font-size:16px;margin:0 0 var(--ed-s2)}
+.case-card .price{font-family:var(--ed-font-mono);color:var(--ed-bone)}
+.case-card .row{display:flex;justify-content:space-between;align-items:center;margin-top:var(--ed-s3)}
+
+/* Badges / stamps */
+.badge{display:inline-flex;align-items:center;font-family:var(--ed-font-mono);font-weight:700;
+  text-transform:uppercase;letter-spacing:.16em;font-size:11px;padding:5px 10px;border-radius:var(--ed-r-sm);border:1px solid}
+.badge-limited{color:var(--ed-acid);border-color:var(--ed-acid)}
+.badge-po{color:var(--ed-violet);border-color:var(--ed-violet)}
+.badge-sold{color:var(--ed-red);border-color:var(--ed-red)}
+.stamp{display:inline-block;font-family:var(--ed-font-mono);font-weight:700;text-transform:uppercase;
+  letter-spacing:.2em;font-size:14px;color:var(--ed-red);border:2px solid var(--ed-red);
+  padding:8px 14px;border-radius:var(--ed-r-sm);transform:rotate(-8deg);opacity:.9}
+
+/* Input */
+.field{display:block;margin-bottom:var(--ed-s4)}
+.field label{display:block;font-family:var(--ed-font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.16em;color:var(--ed-bone-dim);margin-bottom:var(--ed-s2)}
+.field input,.field textarea{width:100%;background:var(--ed-charcoal-2);border:1px solid var(--ed-line);
+  border-radius:var(--ed-r-md);color:var(--ed-bone);padding:14px 16px;font-family:var(--ed-font-body);font-size:15px}
+.field input:focus,.field textarea:focus{outline:none;border-color:var(--ed-violet);box-shadow:0 0 0 3px rgba(139,61,255,.25)}
+
+/* Footer preview */
+.footer-demo{border:1px solid var(--ed-line);border-radius:var(--ed-r-lg);background:
+  radial-gradient(circle at 50% 100%,rgba(139,61,255,.25),transparent 60%),var(--ed-charcoal);
+  padding:var(--ed-s8) var(--ed-s5);text-align:center}
+.footer-demo .slogan{font-family:var(--ed-font-display);text-transform:uppercase;font-size:clamp(1.6rem,5vw,3rem);line-height:.95;margin:0 0 var(--ed-s5)}
+.footer-demo .socials{display:flex;gap:var(--ed-s5);justify-content:center;flex-wrap:wrap;margin-top:var(--ed-s5)}
+.footer-demo .socials a{font-family:var(--ed-font-mono);text-transform:uppercase;letter-spacing:.16em;font-size:12px;color:var(--ed-bone-dim);text-decoration:none}
+.footer-demo .socials a:hover{color:var(--ed-magenta)}
+
+/* misc layout helpers */
+.two{grid-template-columns:1fr 1fr}
+.three{grid-template-columns:repeat(3,1fr)}
+@media(max-width:760px){.two,.three{grid-template-columns:1fr}}
+.panel{border:1px solid var(--ed-line);border-radius:var(--ed-r-md);padding:var(--ed-s5);background:var(--ed-charcoal)}
+code.tok{font-family:var(--ed-font-mono);font-size:12px;color:var(--ed-acid);background:var(--ed-charcoal-2);padding:2px 6px;border-radius:4px}
+pre{background:var(--ed-charcoal-2);border:1px solid var(--ed-line);border-radius:var(--ed-r-md);padding:var(--ed-s5);overflow:auto;font-family:var(--ed-font-mono);font-size:12.5px;line-height:1.7;color:var(--ed-bone)}
+.toc{display:flex;flex-wrap:wrap;gap:var(--ed-s3);margin-top:var(--ed-s5)}
+.toc a{font-family:var(--ed-font-mono);font-size:12px;text-transform:uppercase;letter-spacing:.12em;
+  border:1px solid var(--ed-line);border-radius:var(--ed-r-pill);padding:8px 14px;text-decoration:none;color:var(--ed-bone-dim)}
+.toc a:hover{color:var(--ed-bone);border-color:var(--ed-violet)}
+.do-dont{gap:var(--ed-s4)}
+.dd{border:1px solid var(--ed-line);border-radius:var(--ed-r-md);padding:var(--ed-s4)}
+.dd h5{margin:0 0 var(--ed-s2);font-family:var(--ed-font-mono);text-transform:uppercase;letter-spacing:.14em;font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<header class="doc-hero">
+  <div class="wrap">
+    <p class="mono">Design System · v1.0 · Palette “Neon Evidence” · Type “Hybrid Dossier”</p>
+    <h1 class="doc-title">EUPHORIC<br><span>DISORDER</span></h1>
+    <p class="lead" style="font-size:18px;color:var(--ed-bone)">Sistem desain untuk brand streetwear bertema <b>kriminologi · comedy · creativity</b>. Semua warna, tipografi, dan komponen di dokumen ini adalah nilai final yang siap dipakai — attach file ini di Claude Design / Figma sebagai acuan, dan dipakai lagi sebagai fondasi kode (token identik).</p>
+    <div class="doc-meta">
+      <div><span class="mono">Concept</span><b>THE CASE FILES</b></div>
+      <div><span class="mono">Voice</span><b>Deadpan · Forensik</b></div>
+      <div><span class="mono">Base</span><b>Dark / Neon</b></div>
+      <div><span class="mono">Grid</span><b>12 col · 8pt</b></div>
+    </div>
+    <nav class="toc">
+      <a href="#brand">01 Brand</a>
+      <a href="#color">02 Warna</a>
+      <a href="#type">03 Tipografi</a>
+      <a href="#space">04 Spacing & Grid</a>
+      <a href="#fx">05 Efek & Motion</a>
+      <a href="#components">06 Komponen</a>
+      <a href="#voice">07 Voice & Tone</a>
+      <a href="#tokens">08 Tokens</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ 01 BRAND ============ -->
+<section class="section" id="brand">
+  <div class="wrap">
+    <p class="eyebrow">01 — Brand Foundation</p>
+    <h2 class="sect">Konsep &<br>Prinsip</h2>
+    <div class="grid two">
+      <div class="panel">
+        <h3 class="t-h3" style="margin-top:0">The Case Files</h3>
+        <p>Setiap desain diperlakukan sebagai <b>“berkas perkara”</b>. Produk = barang bukti, halaman = arsip investigasi, review = keterangan saksi. Tema ini nyata: profil resmi menyebut diri “an educational platform showcasing works about various forms of crime.”</p>
+        <p class="note">Motif berulang dari IG mereka: <code class="tok">#WarOnDrugs</code>, adiksi, toxicity, keadilan.</p>
+      </div>
+      <div class="panel">
+        <h3 class="t-h3" style="margin-top:0">5 Prinsip Desain</h3>
+        <p style="margin:0"><b>1. Dark-first.</b> Gelap adalah kanvas; neon adalah bukti.<br>
+        <b>2. Satu wow.</b> Satu momen 3D/animasi berat, sisanya tenang.<br>
+        <b>3. Editorial, bukan template.</b> Tipografi besar & grid berani.<br>
+        <b>4. Detail berkas.</b> Label mono, nomor kasus, cap.<br>
+        <b>5. Suara deadpan.</b> Copy serius-tapi-absurd, bukan bahasa iklan.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:var(--ed-s6)" class="panel">
+      <h3 class="t-h3" style="margin-top:0">Logo</h3>
+      <div class="grid two" style="align-items:center">
+        <div>
+          <p>Gunakan logo neon resmi (SVG) di atas <b>latar gelap</b>. Beri <b>clear space</b> minimal setara tinggi huruf “E”. Untuk splash screen, dibuat <b>versi outline satu-warna</b> agar bisa dianimasikan “digambar oleh garis”.</p>
+          <div class="grid do-dont two">
+            <div class="dd"><h5 class="tag-do">✓ Do</h5><p class="note" style="margin:0">Latar gelap, ruang napas, warna asli neon, atau versi mono bone.</p></div>
+            <div class="dd"><h5 class="tag-dont">✕ Don’t</h5><p class="note" style="margin:0">Taruh di latar terang tanpa kontras, meregangkan, mengganti warna acak, memberi shadow tebal.</p></div>
+          </div>
+        </div>
+        <div style="aspect-ratio:16/9;border:1px dashed var(--ed-line);border-radius:var(--ed-r-md);display:grid;place-items:center;background:var(--ed-ink)">
+          <div style="text-align:center">
+            <div class="navbar" style="border:none;background:none;display:inline-block">
+              <div class="logo">EUPHORIC<small>DISORDER</small></div>
+            </div>
+            <p class="note" style="margin-top:8px">↑ penempatan logo (contoh)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 02 COLOR ============ -->
+<section class="section" id="color">
+  <div class="wrap">
+    <p class="eyebrow">02 — Color</p>
+    <h2 class="sect">Palette:<br>Neon Evidence</h2>
+    <p class="lead">Aturan 80/20: ~80% layar adalah <b>Ink + Bone</b>. Neon (violet→magenta) hanya untuk glow, hover, garis, dan momen kunci. Acid Lime khusus 1 hal: <b>CTA utama</b>. Red khusus status “sold/limited”.</p>
+
+    <div class="grid swatches">
+      <div class="sw"><div class="chip" style="background:#0A0A0F;border-bottom:1px solid var(--ed-line)"></div><div class="meta"><div class="name">Ink Black</div><div class="hex">#0A0A0F</div><div class="role">Background utama</div></div></div>
+      <div class="sw"><div class="chip" style="background:#15151E"></div><div class="meta"><div class="name">Charcoal</div><div class="hex">#15151E</div><div class="role">Surface / kartu</div></div></div>
+      <div class="sw"><div class="chip" style="background:#1E1E2A"></div><div class="meta"><div class="name">Charcoal 2</div><div class="hex">#1E1E2A</div><div class="role">Surface elevated / input</div></div></div>
+      <div class="sw"><div class="chip" style="background:#EDE7D8"></div><div class="meta"><div class="name">Bone</div><div class="hex">#EDE7D8</div><div class="role">Teks utama</div></div></div>
+      <div class="sw"><div class="chip" style="background:#9A948A"></div><div class="meta"><div class="name">Bone Dim</div><div class="hex">#9A948A</div><div class="role">Teks sekunder</div></div></div>
+      <div class="sw"><div class="chip" style="background:#8B3DFF"></div><div class="meta"><div class="name">Electric Violet</div><div class="hex">#8B3DFF</div><div class="role">Aksen utama</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FF2D9B"></div><div class="meta"><div class="name">Neon Magenta</div><div class="hex">#FF2D9B</div><div class="role">Glow / hover</div></div></div>
+      <div class="sw"><div class="chip" style="background:#CDFF3E"></div><div class="meta"><div class="name">Acid Lime</div><div class="hex">#CDFF3E</div><div class="role">CTA punch</div></div></div>
+      <div class="sw"><div class="chip" style="background:#FF3B30"></div><div class="meta"><div class="name">Signal Red</div><div class="hex">#FF3B30</div><div class="role">Status: sold / caution</div></div></div>
+      <div class="sw"><div class="chip" style="background:linear-gradient(135deg,#8B3DFF,#FF2D9B)"></div><div class="meta"><div class="name">Neon Gradient</div><div class="hex">violet → magenta</div><div class="role">Momen kunci / 3D glow</div></div></div>
+    </div>
+
+    <div class="grid do-dont two" style="margin-top:var(--ed-s6)">
+      <div class="dd"><h5 class="tag-do">✓ Do</h5><p class="note" style="margin:0">Teks Bone di atas Ink (kontras tinggi, mudah dibaca). Neon sebagai aksen kecil & glow. Satu CTA Acid per layar.</p></div>
+      <div class="dd"><h5 class="tag-dont">✕ Don’t</h5><p class="note" style="margin:0">Blok besar neon sebagai background. Teks neon di paragraf panjang. Lebih dari satu warna CTA bersaing dalam satu layar.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 03 TYPE ============ -->
+<section class="section" id="type">
+  <div class="wrap">
+    <p class="eyebrow">03 — Typography</p>
+    <h2 class="sect">Hybrid<br>Dossier</h2>
+    <p class="lead"><b>Anton</b> untuk headline raksasa (loud, streetwear). <b>Archivo Black</b> untuk sub-heading. <b>Space Mono</b> untuk label “berkas”. <b>Inter</b> untuk body. Semua gratis (Google Fonts).</p>
+
+    <div class="spec">
+      <div class="label"><span class="mono">Display · Anton · 96px · uppercase · leading .9</span><span class="mono">Hero headline</span></div>
+      <div class="t-display">ALWAYS BRINGING THE FIGHT</div>
+    </div>
+    <div class="spec">
+      <div class="label"><span class="mono">H1 · Anton · 48px</span><span class="mono">Section title</span></div>
+      <div class="t-h1">The Case Files</div>
+    </div>
+    <div class="spec">
+      <div class="label"><span class="mono">H3 · Archivo Black · 28px</span><span class="mono">Sub-heading / product name</span></div>
+      <div class="t-h3">Kaos #WarOnDrugs — M14</div>
+    </div>
+    <div class="spec">
+      <div class="label"><span class="mono">Body · Inter · 18px</span><span class="mono">Paragraf</span></div>
+      <div class="t-body">Puncak dari segala keberanian adalah berani menegakkan keadilan, meski taruhannya kepentingan pribadi. Setiap kaos punya catatan kriminalnya sendiri.</div>
+    </div>
+    <div class="spec">
+      <div class="label"><span class="mono">Label · Space Mono · 13px · tracking .2em</span><span class="mono">Meta / berkas</span></div>
+      <div class="t-mono">CASE #007 — STATUS: OPEN — COTTON COMBED 24S</div>
+    </div>
+
+    <h3 class="t-h3">Skala Tipografi</h3>
+    <table class="scale">
+      <thead><tr><th>Token</th><th>Family</th><th>Size (desktop)</th><th>Size (mobile)</th><th>Pakai untuk</th></tr></thead>
+      <tbody>
+        <tr><td class="fam">display/xl</td><td>Anton</td><td>96–140px</td><td>48–64px</td><td>Hero headline</td></tr>
+        <tr><td class="fam">display/h1</td><td>Anton</td><td>64px</td><td>40px</td><td>Judul section</td></tr>
+        <tr><td class="fam">display/h2</td><td>Anton</td><td>48px</td><td>32px</td><td>Sub-section</td></tr>
+        <tr><td class="fam">heading/h3</td><td>Archivo Black</td><td>28px</td><td>22px</td><td>Nama produk, kartu</td></tr>
+        <tr><td class="fam">heading/h4</td><td>Archivo Black</td><td>20px</td><td>18px</td><td>Label tebal kecil</td></tr>
+        <tr><td class="fam">body/lg</td><td>Inter</td><td>18px</td><td>16px</td><td>Paragraf utama</td></tr>
+        <tr><td class="fam">body/base</td><td>Inter</td><td>16px</td><td>15px</td><td>Teks umum</td></tr>
+        <tr><td class="fam">body/sm</td><td>Inter</td><td>14px</td><td>13px</td><td>Caption</td></tr>
+        <tr><td class="fam">label/mono</td><td>Space Mono</td><td>12–13px</td><td>11px</td><td>Meta, tag, nomor kasus</td></tr>
+      </tbody>
+    </table>
+    <p class="note" style="margin-top:var(--ed-s4)">Disiplin: maksimal 2 keluarga utama + 1 mono. Anton selalu UPPERCASE. Space Mono selalu UPPERCASE + letter-spacing lebar. Body jangan pakai Anton (susah dibaca).</p>
+  </div>
+</section>
+
+<!-- ============ 04 SPACING & GRID ============ -->
+<section class="section" id="space">
+  <div class="wrap">
+    <p class="eyebrow">04 — Spacing, Grid & Radius</p>
+    <h2 class="sect">Ritme</h2>
+    <div class="grid two">
+      <div class="panel">
+        <h3 class="t-h3" style="margin-top:0">Spacing (8pt scale)</h3>
+        <div class="space-row"><span class="mono">s1 · 4px</span><div class="space-bar" style="width:4px"></div></div>
+        <div class="space-row"><span class="mono">s2 · 8px</span><div class="space-bar" style="width:8px"></div></div>
+        <div class="space-row"><span class="mono">s3 · 12px</span><div class="space-bar" style="width:12px"></div></div>
+        <div class="space-row"><span class="mono">s4 · 16px</span><div class="space-bar" style="width:16px"></div></div>
+        <div class="space-row"><span class="mono">s5 · 24px</span><div class="space-bar" style="width:24px"></div></div>
+        <div class="space-row"><span class="mono">s6 · 32px</span><div class="space-bar" style="width:32px"></div></div>
+        <div class="space-row"><span class="mono">s7 · 48px</span><div class="space-bar" style="width:48px"></div></div>
+        <div class="space-row"><span class="mono">s8 · 64px</span><div class="space-bar" style="width:64px"></div></div>
+        <div class="space-row"><span class="mono">s9 · 96px</span><div class="space-bar" style="width:96px"></div></div>
+        <div class="space-row"><span class="mono">s10 · 128px</span><div class="space-bar" style="width:128px"></div></div>
+      </div>
+      <div class="panel">
+        <h3 class="t-h3" style="margin-top:0">Grid & Radius</h3>
+        <p><b>Grid:</b> 12 kolom, max-width 1200px, gutter 24px (desktop). Mobile: 4 kolom, margin 16px.</p>
+        <p><b>Section padding:</b> 96–128px vertikal (desktop), 64px (mobile).</p>
+        <p style="margin-bottom:var(--ed-s4)"><b>Radius:</b></p>
+        <div style="display:flex;gap:var(--ed-s3);flex-wrap:wrap">
+          <div style="text-align:center"><div style="width:70px;height:56px;background:var(--ed-charcoal-2);border:1px solid var(--ed-line);border-radius:4px"></div><span class="mono" style="font-size:11px">sm 4</span></div>
+          <div style="text-align:center"><div style="width:70px;height:56px;background:var(--ed-charcoal-2);border:1px solid var(--ed-line);border-radius:8px"></div><span class="mono" style="font-size:11px">md 8</span></div>
+          <div style="text-align:center"><div style="width:70px;height:56px;background:var(--ed-charcoal-2);border:1px solid var(--ed-line);border-radius:16px"></div><span class="mono" style="font-size:11px">lg 16</span></div>
+          <div style="text-align:center"><div style="width:70px;height:56px;background:var(--ed-charcoal-2);border:1px solid var(--ed-line);border-radius:999px"></div><span class="mono" style="font-size:11px">pill</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 05 FX & MOTION ============ -->
+<section class="section" id="fx">
+  <div class="wrap">
+    <p class="eyebrow">05 — Efek & Motion</p>
+    <h2 class="sect">Glow &<br>Gerak</h2>
+    <div class="grid three">
+      <div class="panel">
+        <h3 class="t-h3" style="margin-top:0">Neon Glow</h3>
+        <div style="height:60px;border-radius:var(--ed-r-md);background:var(--ed-charcoal-2);box-shadow:var(--ed-glow);margin-bottom:var(--ed-s3)"></div>
+        <p class="note" style="margin:0"><code class="tok">--ed-glow</code> hanya untuk elemen fokus (3D, hover CTA, kartu aktif).</p>
+      </div>
+      <div class="panel">
+        <h3 class="t-h3" style="margin-top:0">Durasi</h3>
+        <p style="margin:0"><b>fast</b> 180ms — hover kecil<br><b>base</b> 360ms — kartu, transisi<br><b>slow</b> 700ms — reveal section<br><b>page</b> 800ms — splash / route</p>
+      </div>
+      <div class="panel">
+        <h3 class="t-h3" style="margin-top:0">Easing</h3>
+        <p style="margin:0"><code class="tok">cubic-bezier(.22,1,.36,1)</code><br>(easeOutExpo) — default untuk semua gerak. Terasa “masuk cepat, berhenti halus”.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:var(--ed-s4)">Aturan gerak: hormati <code class="tok">prefers-reduced-motion</code>. Splash maksimal ~2–3 detik & skippable. Scroll-animation berat hanya di Home; halaman lain tenang.</p>
+  </div>
+</section>
+
+<!-- ============ 06 COMPONENTS ============ -->
+<section class="section" id="components">
+  <div class="wrap">
+    <p class="eyebrow">06 — Components</p>
+    <h2 class="sect">Komponen</h2>
+
+    <!-- Buttons -->
+    <h3 class="t-h3">Buttons</h3>
+    <div style="display:flex;gap:var(--ed-s3);flex-wrap:wrap;align-items:center;margin-bottom:var(--ed-s3)">
+      <a class="btn btn-primary" href="#">Amankan di Shopee →</a>
+      <a class="btn btn-neon" href="#">Buka Berkas</a>
+      <a class="btn btn-secondary" href="#">Lihat Semua</a>
+      <a class="btn btn-wa" href="#"><span class="dot"></span> WhatsApp Admin</a>
+    </div>
+    <p class="note">Primary (Acid) = aksi utama, 1 per layar. Neon = ajakan bertema. Secondary = tindakan sekunder. WA = kontak (titik hijau penanda WhatsApp).</p>
+
+    <!-- Navbar -->
+    <h3 class="t-h3" style="margin-top:var(--ed-s7)">Navbar</h3>
+    <div class="navbar">
+      <div class="logo">EUPHORIC<small>DISORDER</small></div>
+      <div class="nav-right">
+        <a class="btn btn-wa" href="#"><span class="dot"></span> WA Business</a>
+        <div class="icon-btn"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:var(--ed-s3)">Kiri: logo. Kanan: tombol WA + tombol menu (buka panel slide-in).</p>
+
+    <!-- Slide-in nav -->
+    <h3 class="t-h3" style="margin-top:var(--ed-s7)">Panel Navigasi (slide-in dari atas)</h3>
+    <div class="slidein">
+      <a href="#">Home <i>01</i></a>
+      <a href="#">About Us <i>02</i></a>
+      <a href="#">Product <i>03</i></a>
+      <a href="#">Contact <i>04</i></a>
+    </div>
+
+    <!-- Product cards -->
+    <h3 class="t-h3" style="margin-top:var(--ed-s7)">Product “Case Card”</h3>
+    <div class="grid cards">
+      <div class="case-card">
+        <div class="thumb"><span class="no">CASE #014</span><span class="ph">FOTO PRODUK</span></div>
+        <div class="body">
+          <h4>#WarOnDrugs — M14</h4>
+          <div class="price">Rp 95.000</div>
+          <div class="row"><span class="badge badge-po">Pre-Order</span><span class="mono" style="color:var(--ed-bone-dim)">Combed 24s</span></div>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="thumb"><span class="no">CASE #001</span><span class="ph">FOTO PRODUK</span></div>
+        <div class="body">
+          <h4>Candy Hoodie ED</h4>
+          <div class="price">Rp 350.000</div>
+          <div class="row"><span class="badge badge-limited">Limited</span><span class="mono" style="color:var(--ed-bone-dim)">Fleece</span></div>
+        </div>
+      </div>
+      <div class="case-card">
+        <div class="thumb"><span class="no">CASE #007</span><span class="ph">FOTO PRODUK</span></div>
+        <div class="body">
+          <h4>#WarOnDrugs — M7 Lego</h4>
+          <div class="price">Rp 95.000</div>
+          <div class="row"><span class="badge badge-sold">Sold Out</span><span class="mono" style="color:var(--ed-bone-dim)">Combed 24s</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Badges & stamps -->
+    <h3 class="t-h3" style="margin-top:var(--ed-s7)">Badges & Stamps</h3>
+    <div style="display:flex;gap:var(--ed-s4);flex-wrap:wrap;align-items:center">
+      <span class="badge badge-limited">Limited</span>
+      <span class="badge badge-po">Pre-Order</span>
+      <span class="badge badge-sold">Sold Out</span>
+      <span class="stamp">Evidence</span>
+      <span class="stamp" style="color:var(--ed-violet);border-color:var(--ed-violet);transform:rotate(5deg)">Classified</span>
+    </div>
+
+    <!-- Form -->
+    <h3 class="t-h3" style="margin-top:var(--ed-s7)">Form (Contact / Custom Order)</h3>
+    <div class="grid two">
+      <div>
+        <div class="field"><label>Nama Pelapor</label><input placeholder="Nama kamu"></div>
+        <div class="field"><label>Detail Kasus</label><textarea rows="3" placeholder="Ceritakan request sablon / pertanyaanmu"></textarea></div>
+        <a class="btn btn-primary" href="#">Kirim Laporan →</a>
+      </div>
+      <div class="panel">
+        <p class="mono" style="color:var(--ed-magenta)">Focus state</p>
+        <p class="note">Border berubah ke Electric Violet + ring lembut saat aktif. Placeholder pakai Bone Dim. Label pakai Space Mono uppercase.</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <h3 class="t-h3" style="margin-top:var(--ed-s7)">Footer</h3>
+    <div class="footer-demo">
+      <p class="mono" style="color:var(--ed-magenta)">CLOSED AT 02.00 — MOTIF: GABUT</p>
+      <p class="slogan">Every Shirt<br>Has a Record.</p>
+      <a class="btn btn-neon" href="#">Business Enquiries →</a>
+      <div class="socials">
+        <a href="#">Instagram</a><a href="#">Shopee</a><a href="#">Threads</a><a href="#">TikTok</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 07 VOICE ============ -->
+<section class="section" id="voice">
+  <div class="wrap">
+    <p class="eyebrow">07 — Voice & Tone</p>
+    <h2 class="sect">Suara<br>Deadpan</h2>
+    <div class="grid two">
+      <div class="dd"><h5 class="tag-do">✓ Terdengar seperti ED</h5>
+        <p class="note" style="margin:0">“Tersangka terakhir terlihat mengenakan kaos ini di warkop, pukul 02.00. Motif: gabut.”<br><br>“Barang bukti #014. Bahan Cotton Combed 24s. Status: masih buron di Shopee.”<br><br>“Imitasi adalah sanjungan paling tulus — setidaknya akui sumbernya.”</p>
+      </div>
+      <div class="dd"><h5 class="tag-dont">✕ Jangan generik</h5>
+        <p class="note" style="margin:0">“Kualitas terbaik dengan harga terjangkau!”<br><br>“Produk premium untuk gaya hidup modern.”<br><br>“Buruan order sebelum kehabisan ya kak 🔥🔥”</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:var(--ed-s4)">Nada: serius seperti laporan forensik, tapi absurd/komedik di isinya. Bahasa Indonesia santai-cerdas, sesekali istilah kriminologi. Hindari hard-sell & emoji berlebihan.</p>
+  </div>
+</section>
+
+<!-- ============ 08 TOKENS ============ -->
+<section class="section" id="tokens">
+  <div class="wrap">
+    <p class="eyebrow">08 — Design Tokens (copy-paste)</p>
+    <h2 class="sect">Tokens</h2>
+    <p class="lead">Nilai identik dipakai di design tool & di kode. File terpisah tersedia: <code class="tok">tokens.css</code> dan <code class="tok">tokens.json</code>.</p>
+    <pre>:root{
+  /* color */
+  --ed-ink:#0A0A0F; --ed-charcoal:#15151E; --ed-charcoal-2:#1E1E2A;
+  --ed-line:#2A2A38; --ed-bone:#EDE7D8; --ed-bone-dim:#9A948A;
+  --ed-violet:#8B3DFF; --ed-magenta:#FF2D9B; --ed-acid:#CDFF3E; --ed-red:#FF3B30;
+  --ed-grad:linear-gradient(135deg,#8B3DFF,#FF2D9B);
+  --ed-glow:0 0 24px rgba(139,61,255,.45),0 0 48px rgba(255,45,155,.25);
+  /* type */
+  --ed-font-display:"Anton"; --ed-font-heading:"Archivo Black";
+  --ed-font-body:"Inter"; --ed-font-mono:"Space Mono";
+  /* spacing */ --ed-s1:4px;--ed-s2:8px;--ed-s3:12px;--ed-s4:16px;--ed-s5:24px;
+  --ed-s6:32px;--ed-s7:48px;--ed-s8:64px;--ed-s9:96px;--ed-s10:128px;
+  /* radius */ --ed-r-sm:4px;--ed-r-md:8px;--ed-r-lg:16px;--ed-r-pill:999px;
+  /* motion */ --ed-ease:cubic-bezier(.22,1,.36,1);
+  --ed-dur-fast:180ms;--ed-dur:360ms;--ed-dur-slow:700ms;
+}
+/* Google Fonts */
+/* Anton · Archivo Black · Inter (400-700) · Space Mono (400,700) */</pre>
+    <p class="note">Font di-load dari Google Fonts. Bila dokumen dibuka offline, tipografi jatuh ke system font — buka online untuk melihat font asli.</p>
+  </div>
+</section>
+
+<footer style="padding:var(--ed-s8) 0;border-top:1px solid var(--ed-line);text-align:center">
+  <p class="mono">EUPHORIC DISORDER · DESIGN SYSTEM v1.0 · NEON EVIDENCE × HYBRID DOSSIER</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,58 @@
+/* ============================================================
+   EUPHORIC DISORDER — Design Tokens · "RISO / SABLON"
+   Screen-print aesthetic. Purple = pink × blue overprint.
+   Fonts: Anton, Archivo Black, Inter, Space Mono (Google Fonts)
+   ============================================================ */
+:root{
+  /* ---------- PAPER + INK ---------- */
+  --paper:#F1E7D2;      /* newsprint / craft base */
+  --paper-2:#E7DBBE;    /* panel paper */
+  --ink:#161009;        /* warm near-black */
+  --ink-soft:#5A5142;   /* muted text */
+
+  /* ---------- SPOT INKS (max 3 per komposisi) ---------- */
+  --pink:#FF2E88;       /* fluoro pink — ink 1 */
+  --blue:#2436D8;       /* riso blue — ink 2 */
+  --overprint:#7A1F9E;  /* pink × blue (multiply) ≈ brand purple */
+  --acid:#E4EA1F;       /* highlighter yellow — pakai jarang */
+
+  /* ---------- TYPOGRAPHY ---------- */
+  --f-display:"Anton", system-ui, sans-serif;         /* hero/H1-H2 UPPERCASE */
+  --f-head:"Archivo Black", system-ui, sans-serif;    /* H3-H4 */
+  --f-body:"Inter", system-ui, sans-serif;            /* paragraf */
+  --f-mono:"Space Mono", ui-monospace, monospace;     /* label/berkas UPPERCASE */
+
+  --fs-display-xl:clamp(3.4rem, 12vw, 9rem);
+  --fs-h1:clamp(2.5rem, 6vw, 4rem);
+  --fs-h2:clamp(2rem, 5vw, 3rem);
+  --fs-h3:clamp(1.35rem, 3vw, 1.6rem);
+  --fs-body-lg:1.125rem; --fs-body:1rem; --fs-sm:.875rem; --fs-label:.75rem;
+
+  /* ---------- SPACING (8pt) ---------- */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px;
+  --s6:32px; --s7:48px; --s8:64px; --s9:96px; --s10:128px;
+
+  /* ---------- PRINT RULES (bukan "radius/soft shadow") ---------- */
+  --radius:0px;                          /* sudut tajam */
+  --rule:2px solid var(--ink);           /* garis tebal koran */
+  --rule-double:3px double var(--ink);
+  --shadow-hard:6px 6px 0 var(--ink);    /* hard offset shadow */
+  --shadow-hard-pink:6px 6px 0 var(--pink);
+
+  /* misregistration (pakai sebagai text-shadow untuk headline) */
+  --misreg:3px 0 0 var(--pink), -3px 2px 0 var(--blue);
+
+  /* halftone tint: background-image + currentColor
+     radial-gradient(currentColor 23%, transparent 24%); size 6px 6px */
+
+  /* ---------- MOTION (snappy, bukan glow) ---------- */
+  --ease:cubic-bezier(.2, .8, .2, 1);
+  --dur-fast:120ms; --dur:220ms; --dur-slow:600ms; --dur-page:800ms;
+
+  /* ---------- LAYOUT ---------- */
+  --maxw:1180px; --gutter:24px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important; transition-duration:.001ms !important}
+}

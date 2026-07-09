@@ -1,0 +1,58 @@
+/* ============================================================
+   EUPHORIC DISORDER — Design Tokens
+   Palette: "Neon Evidence" · Type: "Hybrid Dossier"
+   Import once (globals). Fonts: Google Fonts (Anton, Archivo Black,
+   Inter, Space Mono).
+   ============================================================ */
+:root{
+  /* ---------- COLOR: base ---------- */
+  --ed-ink:#0A0A0F;
+  --ed-charcoal:#15151E;
+  --ed-charcoal-2:#1E1E2A;
+  --ed-line:#2A2A38;
+  --ed-bone:#EDE7D8;
+  --ed-bone-dim:#9A948A;
+
+  /* ---------- COLOR: accents ---------- */
+  --ed-violet:#8B3DFF;
+  --ed-magenta:#FF2D9B;
+  --ed-acid:#CDFF3E;
+  --ed-red:#FF3B30;
+  --ed-grad:linear-gradient(135deg,#8B3DFF 0%,#FF2D9B 100%);
+  --ed-glow:0 0 24px rgba(139,61,255,.45), 0 0 48px rgba(255,45,155,.25);
+
+  /* ---------- TYPOGRAPHY ---------- */
+  --ed-font-display:"Anton", system-ui, sans-serif;   /* hero / H1-H2, UPPERCASE */
+  --ed-font-heading:"Archivo Black", system-ui, sans-serif; /* H3-H4 */
+  --ed-font-body:"Inter", system-ui, sans-serif;      /* paragraf */
+  --ed-font-mono:"Space Mono", ui-monospace, monospace; /* label/meta, UPPERCASE */
+
+  /* fluid type (clamp: min, preferred, max) */
+  --ed-fs-display-xl:clamp(3rem, 10vw, 8.75rem);
+  --ed-fs-h1:clamp(2.5rem, 6vw, 4rem);
+  --ed-fs-h2:clamp(2rem, 5vw, 3rem);
+  --ed-fs-h3:clamp(1.375rem, 3vw, 1.75rem);
+  --ed-fs-body-lg:1.125rem;   /* 18 */
+  --ed-fs-body:1rem;          /* 16 */
+  --ed-fs-sm:0.875rem;        /* 14 */
+  --ed-fs-label:0.75rem;      /* 12 */
+
+  /* ---------- SPACING (8pt) ---------- */
+  --ed-s1:4px; --ed-s2:8px; --ed-s3:12px; --ed-s4:16px; --ed-s5:24px;
+  --ed-s6:32px; --ed-s7:48px; --ed-s8:64px; --ed-s9:96px; --ed-s10:128px;
+
+  /* ---------- RADIUS ---------- */
+  --ed-r-sm:4px; --ed-r-md:8px; --ed-r-lg:16px; --ed-r-pill:999px;
+
+  /* ---------- MOTION ---------- */
+  --ed-ease:cubic-bezier(.22, 1, .36, 1);
+  --ed-dur-fast:180ms; --ed-dur:360ms; --ed-dur-slow:700ms; --ed-dur-page:800ms;
+
+  /* ---------- LAYOUT ---------- */
+  --ed-maxw:1200px;
+  --ed-gutter:24px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms !important; transition-duration:.001ms !important}
+}
