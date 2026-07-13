@@ -1,0 +1,118 @@
+/* Token brand (tema READY DESIGN) dimuat dulu, lalu layer Tailwind. */
+@import "./tokens.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: auto; /* smooth-scroll ditangani Lenis, bukan CSS */
+  }
+
+  body {
+    /* BG global mengikuti surface aktif → transisi kontras menyeluruh */
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    line-height: var(--lh-body);
+    overflow-x: hidden;
+    transition: background-color var(--dur-flip) var(--ease-inout),
+      color var(--dur-flip) var(--ease-inout);
+  }
+
+  ::selection {
+    background: var(--lime);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--lime);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  /* Section: mem-flip surface via data-surface, warna transisi halus. */
+  .surface {
+    background-color: var(--bg);
+    color: var(--fg);
+    transition: background-color var(--dur-flip) var(--ease-inout),
+      color var(--dur-flip) var(--ease-inout);
+  }
+
+  /* Label metadata: Space Mono, uppercase, tracking lebar. */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: var(--fs-label);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+  }
+}
+
+@layer utilities {
+  .font-brush {
+    font-family: var(--font-brush);
+    font-weight: 400;
+  }
+}
+
+/* Drift halus untuk animation pattern global (topografi). */
+@keyframes ed-topo-drift {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translate(-52%, -48%) rotate(2deg) scale(1.06);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+  }
+}
+.ed-topo-drift {
+  animation: ed-topo-drift 42s var(--ease-inout) infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ed-topo-drift {
+    animation: none;
+  }
+}
+
+/* Ticker / marquee loop (tak terpengaruh scroll) — track berisi 2 grup identik,
+   geser -50% agar mulus. */
+@keyframes ed-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes ed-marquee-rev {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.ed-marquee {
+  display: flex;
+  width: max-content;
+  flex-wrap: nowrap;
+  animation: ed-marquee 34s linear infinite;
+  will-change: transform;
+}
+.ed-marquee-rev {
+  animation: ed-marquee-rev 40s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ed-marquee,
+  .ed-marquee-rev {
+    animation: none;
+  }
+}

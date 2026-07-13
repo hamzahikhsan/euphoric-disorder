@@ -1,0 +1,104 @@
+/* ==========================================================================
+   euphoric.disorder — Design Tokens
+   Theme: "READY DESIGN" (Figma) — light + dark, aksen lime.
+   Sumber kebenaran visual: Figma page READY DESIGN.
+   Prinsip: streetwear editorial, kontras terang↔gelap yang berpindah saat scroll.
+   Catatan: nilai hex lime/forest/paper diverifikasi ulang per-section saat build.
+   ========================================================================== */
+
+:root {
+  /* --- PALET MENTAH (fixed) --- */
+  --paper:        #FCFCFA;   /* bg terang */
+  --ink:          #282C20;   /* teks/UI gelap di atas terang */
+  --forest:       #2C3221;   /* bg hijau gelap */
+  --forest-deep:  #21261A;   /* footer / kartu di section gelap */
+  --bone:         #EDEBDD;   /* teks krem di atas gelap */
+  --bone-dim:     #B8B8A6;   /* teks sekunder di atas gelap */
+  --ink-dim:      #6E7161;   /* teks sekunder di atas terang */
+  --lime:         #CDFF00;   /* aksen neon (verifikasi hex final) */
+  --lime-deep:    #A9D400;   /* lime lebih gelap utk di atas terang */
+
+  /* --- SURFACE SEMANTIK ---
+     Section memakai [data-surface] untuk mem-flip warna. Navbar & pattern
+     membaca variabel ini agar kontrasnya ikut berpindah (sesuai storyboard). */
+  --bg:        var(--paper);
+  --fg:        var(--ink);
+  --fg-dim:    var(--ink-dim);
+  --nav-fg:    var(--ink);              /* teks kiri navbar + button kanan */
+  --pattern:   rgba(40, 44, 32, 0.10);  /* topografi: agak gelap saat bg terang */
+  --accent:    var(--lime);
+
+  /* --- TIPOGRAFI: families (di-wiring ke next/font di globals.css) --- */
+  --font-display: var(--font-nohemi), "Arial Narrow", sans-serif;  /* wordmark & heading */
+  --font-serif:   var(--font-pt-serif), Georgia, serif;            /* OUR PROFILE / PRODUCT */
+  --font-brush:   var(--font-permanent-marker), "Comic Sans MS", cursive; /* CREATIVITY / CODM */
+  --font-body:    var(--font-nohemi), system-ui, sans-serif;
+  --font-mono:    var(--font-space-mono), ui-monospace, monospace;
+
+  /* --- TIPOGRAFI: skala (dari style Figma: h2-32 … label-10) --- */
+  --fs-display:  clamp(3rem, 11vw, 10rem);   /* EUPHORIC DISORDER / CREATIVITY */
+  --fs-h1:       clamp(2.5rem, 6vw, 5rem);
+  --fs-h2:       2rem;      /* 32 */
+  --fs-h3:       1.75rem;   /* 28 */
+  --fs-h4:       1.5rem;    /* 24 */
+  --fs-p1:       1.25rem;   /* 20 */
+  --fs-p2:       1.125rem;  /* 18 */
+  --fs-body1:    1rem;      /* 16 */
+  --fs-body2:    0.875rem;  /* 14 */
+  --fs-caption:  0.75rem;   /* 12 */
+  --fs-label:    0.625rem;  /* 10 */
+
+  --lh-tight:  1.0;
+  --lh-snug:   1.2;
+  --lh-body:   1.55;
+  --tracking-tight: -0.02em;
+  --tracking-label: 0.16em;
+
+  /* --- SPACING (base 4pt) --- */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-6: 24px;  --space-8: 32px;  --space-12: 48px; --space-16: 64px;
+  --space-24: 96px; --space-32: 128px;
+
+  /* --- LAYOUT --- */
+  --maxw:   1440px;   /* grid desktop Figma */
+  --gutter: 24px;
+
+  /* --- RADIUS --- */
+  --radius-0: 0px;
+  --radius-1: 6px;
+  --radius-2: 12px;   /* radius-lg Figma */
+  --radius-pill: 999px;
+
+  /* --- MOTION --- */
+  --ease-out:   cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro:  180ms;
+  --dur-std:    450ms;
+  --dur-flip:   700ms;   /* transisi kontras antar-surface */
+
+  --z-nav: 100; --z-menu: 200; --z-splash: 900;
+}
+
+/* Section terang (default sama dgn :root, ditulis eksplisit utk kejelasan) */
+[data-surface="light"] {
+  --bg: var(--paper);
+  --fg: var(--ink);
+  --fg-dim: var(--ink-dim);
+  --nav-fg: var(--ink);
+  --pattern: rgba(40, 44, 32, 0.10);
+  --accent: var(--lime-deep);
+}
+
+/* Section gelap — kontras terbalik */
+[data-surface="dark"] {
+  --bg: var(--forest);
+  --fg: var(--bone);
+  --fg-dim: var(--bone-dim);
+  --nav-fg: var(--paper);
+  --pattern: rgba(237, 235, 221, 0.10);
+  --accent: var(--lime);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-micro: 0ms; --dur-std: 0ms; --dur-flip: 0ms; }
+}

@@ -1,0 +1,86 @@
+/* ==========================================================================
+   euphoric.disorder — Design Tokens
+   Theme: "Editorial Archive" (Dark)
+   v3 · 9 Juli 2026
+   Prinsip: profesional, editorial, tenang. Kriminologi = subteks, bukan properti visual.
+   ========================================================================== */
+
+:root {
+  /* --- COLOR: surfaces (80% layar) --- */
+  --bg-base:        #0E0E10;   /* near-black charcoal, sedikit hangat */
+  --bg-raised:      #17171A;   /* kartu / surface terangkat */
+  --bg-sunken:      #09090B;   /* footer / area tenggelam */
+  --bg-overlay:     rgba(9,9,11,0.72); /* menu slide-in / modal */
+
+  /* --- COLOR: ink (teks) --- */
+  --text-primary:   #EDE7D8;   /* bone — teks utama */
+  --text-secondary: #A8A399;   /* deskripsi / caption */
+  --text-tertiary:  #6E6A62;   /* label metadata / disabled */
+
+  /* --- COLOR: accent (dipakai HEMAT — link, CTA, state aktif) --- */
+  --accent:         #2F5BFF;   /* electric cobalt */
+  --accent-hover:   #4A72FF;
+  --accent-weak:    rgba(47,91,255,0.14); /* fill halus / highlight */
+
+  /* --- COLOR: status (low-key, hanya untuk badge produk) --- */
+  --status-open:    #6FBF8B;   /* OPEN / ready */
+  --status-limited: #C8952E;   /* LIMITED / PO */
+  --status-sold:    #B4483C;   /* SOLD OUT */
+
+  /* --- COLOR: lines --- */
+  --line:           rgba(237,231,216,0.12);
+  --line-strong:    rgba(237,231,216,0.28);
+
+  /* --- TYPOGRAPHY: families ---
+     Display : Archivo (grotesk profesional, tersedia di Google Fonts)
+               (alternatif editorial: Fraunces — serif kontras tinggi, boleh di-swap)
+     Body    : Inter
+     Label   : Space Mono (metadata/indeks — dipakai kecil & hemat) */
+  --font-display: "Archivo", "Arial Narrow", sans-serif;
+  --font-body:    "Inter", system-ui, sans-serif;
+  --font-mono:    "Space Mono", ui-monospace, monospace;
+
+  /* --- TYPOGRAPHY: fluid scale --- */
+  --fs-display-xl: clamp(3.25rem, 9vw, 8rem);   /* hero wordmark / statement */
+  --fs-display-l:  clamp(2.25rem, 5vw, 4.5rem); /* judul section */
+  --fs-h2:         clamp(1.75rem, 3vw, 2.5rem);
+  --fs-h3:         1.375rem;
+  --fs-body-l:     1.125rem;
+  --fs-body:       1rem;
+  --fs-label:      0.75rem;    /* Space Mono, uppercase, tracking lebar */
+
+  --lh-tight:      1.02;       /* display */
+  --lh-snug:       1.25;       /* heading */
+  --lh-body:       1.6;        /* paragraf */
+  --tracking-display: -0.02em;
+  --tracking-label:   0.14em;
+
+  /* --- SPACING (base 4pt) --- */
+  --space-1: 4px;   --space-2: 8px;   --space-3: 12px;  --space-4: 16px;
+  --space-6: 24px;  --space-8: 32px;  --space-12: 48px; --space-16: 64px;
+  --space-24: 96px; --space-32: 128px;
+
+  /* --- LAYOUT --- */
+  --maxw:        1240px;
+  --gutter:      24px;
+  --grid-cols:   12;
+
+  /* --- RADIUS (editorial = tajam) --- */
+  --radius-0: 0px;
+  --radius-1: 2px;   /* tombol / input */
+  --radius-2: 4px;   /* kartu */
+
+  /* --- MOTION --- */
+  --ease-out:    cubic-bezier(0.22, 1, 0.36, 1);   /* reveal masuk */
+  --ease-inout:  cubic-bezier(0.65, 0, 0.35, 1);   /* scroll-linked */
+  --dur-micro:   150ms;   /* hover, tap */
+  --dur-std:     400ms;   /* transisi komponen */
+  --dur-scene:   800ms;   /* transisi antar-scene */
+
+  --z-nav: 100; --z-menu: 200; --z-splash: 900;
+}
+
+/* Aksesibilitas: matikan gerak besar bila diminta OS */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-micro: 0ms; --dur-std: 0ms; --dur-scene: 0ms; }
+}
