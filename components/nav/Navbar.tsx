@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { site } from "@/content/site";
 
 /**
  * Navbar + OPEN MENU overlay (Figma node 19050:696).
@@ -68,7 +69,9 @@ export default function Navbar() {
 
           <div className="flex items-center gap-3">
             <a
-              href="#"
+              href={site.shopeeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-pill bg-lime px-4 py-2 font-display text-body2 font-semibold text-ink transition-transform duration-micro hover:scale-[1.03]"
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -186,11 +189,19 @@ export default function Navbar() {
               >
                 <p className="font-serif text-p1 italic text-bone">Follow us on social media</p>
                 <ul className="flex items-center gap-5 label-mono text-bone/70">
-                  <li><a href="#" onClick={() => setOpen(false)} className="transition-colors hover:text-[#D2FF00]">TikTok</a></li>
-                  <li aria-hidden>·</li>
-                  <li><a href="https://instagram.com/euphoric.disorder" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-[#D2FF00]">Instagram</a></li>
-                  <li aria-hidden>·</li>
-                  <li><a href="#" onClick={() => setOpen(false)} className="transition-colors hover:text-[#D2FF00]">Facebook</a></li>
+                  {site.socials.map((s, i) => (
+                    <li key={s.label} className="flex items-center gap-5">
+                      {i > 0 && <span aria-hidden>·</span>}
+                      <a
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="transition-colors hover:text-[#D2FF00]"
+                      >
+                        {s.label}
+                      </a>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </div>

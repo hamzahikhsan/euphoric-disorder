@@ -5,6 +5,7 @@ import Image from "next/image";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CardDeck } from "@/components/product/CardDeck";
+import { site } from "@/content/site";
 
 /**
  * Scene 7 — LOOK OUT / OUR SOCIAL MEDIA (surface: light).
@@ -109,19 +110,19 @@ export default function SocialAlbum() {
           @euphoric.disorder
         </a>
         <ul className="flex items-center gap-6 label-mono text-fg-dim">
-          <li>
-            <a href="https://instagram.com/euphoric.disorder" target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-fg">
-              Instagram
-            </a>
-          </li>
-          <li aria-hidden>·</li>
-          <li>
-            <a href="#" className="transition-colors hover:text-fg">TikTok</a>
-          </li>
-          <li aria-hidden>·</li>
-          <li>
-            <a href="#" className="transition-colors hover:text-fg">Facebook</a>
-          </li>
+          {site.socials.map((s, i) => (
+            <li key={s.label} className="flex items-center gap-6">
+              {i > 0 && <span aria-hidden>·</span>}
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition-colors hover:text-fg"
+              >
+                {s.label}
+              </a>
+            </li>
+          ))}
         </ul>
       </div>
     </section>

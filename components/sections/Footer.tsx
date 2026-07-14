@@ -1,5 +1,6 @@
 import Image from "next/image";
 import BrandTicker from "./BrandTicker";
+import { site, waLink } from "@/content/site";
 
 /**
  * Scene 8 — FOOTER (mengikuti Figma node 19038:15428).
@@ -14,11 +15,7 @@ const NAV = [
   { label: "Product", href: "/product" },
   { label: "Contact", href: "/contact" },
 ];
-const SOCIAL = [
-  { label: "TikTok", href: "#" },
-  { label: "Instagram", href: "https://instagram.com/euphoric.disorder" },
-  { label: "Facebook", href: "#" },
-];
+const SOCIAL = site.socials;
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -60,7 +57,9 @@ export default function Footer() {
                 ))}
               </ul>
               <a
-                href="#"
+                href={site.shopeeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="mt-3 inline-flex min-h-[44px] items-center font-display text-h4 font-bold text-lime transition-opacity hover:opacity-80"
               >
                 Store
@@ -76,15 +75,29 @@ export default function Footer() {
                 height={648}
                 className="h-auto w-full"
               />
-              <a
-                href="/product"
-                className="absolute bottom-2 left-1/2 inline-flex min-h-[44px] -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-pill bg-lime px-5 py-3 font-display text-body1 font-bold text-ink transition-transform duration-micro hover:scale-[1.03] active:scale-95"
-              >
-                See in our product
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-                  <path d="M4 17c6-1 8-5 8-9m0 0-3 3m3-3 3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
+              <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 items-center gap-2">
+                <a
+                  href="/product"
+                  className="inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-pill bg-lime px-4 py-3 font-display text-body2 font-bold text-ink transition-transform duration-micro hover:scale-[1.03] active:scale-95"
+                >
+                  See in our product
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
+                    <path d="M4 17c6-1 8-5 8-9m0 0-3 3m3-3 3 3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+                <a
+                  href={waLink(site.waGeneralMessage)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Tanya via WhatsApp"
+                  className="inline-flex min-h-[44px] items-center gap-2 whitespace-nowrap rounded-pill border border-bone/40 bg-forest/60 px-4 py-3 font-display text-body2 font-bold text-bone backdrop-blur-sm transition-colors duration-micro hover:bg-bone/10 active:scale-95"
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d="M12 2a10 10 0 0 0-8.5 15.2L2 22l4.9-1.5A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-2.9.9.8-2.8-.2-.3A8 8 0 1 1 12 20Zm4.4-6c-.2-.1-1.4-.7-1.6-.8s-.4-.1-.5.1-.6.8-.8 1-.3.2-.5.1a6.5 6.5 0 0 1-3.2-2.8c-.2-.4.2-.4.6-1.2.1-.1 0-.3 0-.4l-.7-1.7c-.2-.5-.4-.4-.5-.4h-.5a1 1 0 0 0-.7.3A2.8 2.8 0 0 0 6 8.3c0 1.7 1.2 3.3 1.4 3.5s2.4 3.7 5.8 5.1c2 .9 2.4.7 2.9.7s1.4-.6 1.6-1.1.2-1 .1-1.1-.2-.2-.5-.3Z" />
+                  </svg>
+                  WhatsApp
+                </a>
+              </div>
             </div>
 
             {/* SOCIAL */}

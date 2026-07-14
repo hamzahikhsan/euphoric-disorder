@@ -10,22 +10,33 @@ export const site = {
   thesis:
     "Kejahatan sebagai bahan kajian. Kaos sebagai medium. Comedy · Criminologist · Creativity.",
 
-  // ⚠️ Placeholder — belum dipastikan Hamzah
-  est: "⚠️[tahun]",
-  city: "⚠️[kota]",
+  est: "2021", // JakCloth participant since 2021
+  city: "Jakarta Pusat",
+  address:
+    "Jalan Kran Raya No.4 RT.001/RW.09, Gunung Sahari Selatan, Kemayoran, Jakarta Pusat",
+  mapsUrl: "https://maps.google.com/?q=-6.1570954,106.8455872",
 
-  // Kontak / transaksi (fase profil → arahkan keluar)
-  whatsappNumber: "PLACEHOLDER", // ⚠️ nomor WA Business
-  whatsappBase: "https://wa.me/PLACEHOLDER",
-  shopeeUrl: "https://shopee.co.id/PLACEHOLDER", // ⚠️ toko resmi
+  // Kontak / transaksi (fase profil → arahkan keluar). Sumber: docs/05-LINKS-CONTACT.md
+  whatsappNumber: "+62 856-1740-296",
+  whatsappBase: "https://wa.me/628561740296",
+  whatsappHours: "Senin–Sabtu, 09:00–20:00 WIB",
+  waGeneralMessage: "Halo Euphoric Disorder, saya mau tanya-tanya.",
+  shopeeUrl: "https://shopee.co.id/compaxgrup",
   instagram: "https://instagram.com/euphoric.disorder",
   threads: "https://threads.net/@euphoric.disorder",
 
+  // Sosial resmi yang aktif (brand belum punya TikTok/Facebook per doc)
   socials: [
     { label: "Instagram", href: "https://instagram.com/euphoric.disorder" },
-    { label: "Shopee", href: "https://shopee.co.id/PLACEHOLDER" },
-    { label: "WhatsApp", href: "https://wa.me/PLACEHOLDER" },
     { label: "Threads", href: "https://threads.net/@euphoric.disorder" },
+  ],
+
+  // Navigasi internal
+  nav: [
+    { label: "Home", href: "/" },
+    { label: "About Us", href: "/about" },
+    { label: "Product/Service", href: "/product" },
+    { label: "Contact", href: "/contact" },
   ],
 } as const;
 
