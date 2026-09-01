@@ -95,6 +95,35 @@ export const products: Product[] = [
     description:
       "Subject S4. Katun combed 24s, dua sisi. Bukti yang bisa dibalik.",
   },
+  {
+    slug: "custom-sablon-batch",
+    subject: "009",
+    name: "Custom Sablon & Apparel — Batch Production",
+    material: "Combed 24s / 16s Heavyweight / Fleece 330gsm",
+    priceIDR: 55000,
+    status: "OPEN",
+    filedUnder: ["Custom Sablon", "Service"],
+    images: {
+      front: "/img/shirt-gray.png",
+      back: "/img/shirt-green.png",
+    },
+    description:
+      "Subject 009. Layanan pembuatan kaos & apparel kustom skala komunitas atau brand kolektif (min. 12 pcs). Pilihan bahan Combed 24s, 16s Heavyweight (235 GSM), hingga Fleece 330gsm dengan sablon Plastisol / Discharge tahan lama.",
+  },
+  {
+    slug: "custom-sablon-satuan",
+    subject: "010",
+    name: "Custom Sablon Satuan & Sample Build",
+    material: "Cotton Combed 24s / 30s",
+    priceIDR: 75000,
+    status: "OPEN",
+    filedUnder: ["Custom Sablon", "Service"],
+    images: {
+      front: "/img/hero-tee.png",
+    },
+    description:
+      "Subject 010. Cetak sampel produk atau kaos custom tanpa minimal order (1 pcs pun dilayani). Menggunakan cetak DTF presisi tinggi / Plastisol HD dengan detail warna tajam.",
+  },
 ];
 
 export const getProduct = (slug: string) =>

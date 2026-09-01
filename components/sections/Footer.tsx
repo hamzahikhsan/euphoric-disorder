@@ -28,7 +28,7 @@ export default function Footer() {
           {/* slogan */}
           <div className="relative text-center">
             <span className="pointer-events-none absolute left-[38%] -top-4 -translate-x-1/2 -rotate-6 font-brush text-h2 text-lime md:-top-6">
-              creatifity
+              creativity
             </span>
             <h2 className="font-black uppercase leading-[0.92] tracking-tight text-[clamp(2.25rem,7vw,5.5rem)]">
               <span className="font-display text-bone">Always </span>

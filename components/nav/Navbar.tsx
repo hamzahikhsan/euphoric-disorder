@@ -56,7 +56,7 @@ export default function Navbar() {
       <header className="fixed inset-x-0 top-0 z-nav">
         <nav className="mx-auto flex max-w-content items-center justify-between px-6 py-5">
           <a
-            href="#top"
+            href="/"
             aria-label="euphoric.disorder — beranda"
             className={`font-display transition-colors duration-flip ${open ? "text-bone" : "text-nav-fg"}`}
           >

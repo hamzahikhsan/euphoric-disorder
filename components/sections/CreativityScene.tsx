@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import Image from "next/image";
+import dynamic from "next/dynamic";
+
+const TShirtViewer = dynamic(() => import("@/components/hero/TShirtViewer"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="h-12 w-12 animate-spin rounded-full border-2 border-accent border-t-transparent" />
+    </div>
+  ),
+});
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -101,18 +110,12 @@ export default function CreativityScene() {
           </div>
         </div>
 
-        {/* kaos zoom-out */}
+        {/* kaos 3D interaktif — drag untuk putar */}
         <div
           ref={shirtRef}
-          className="pointer-events-none absolute z-10 w-[34%] min-w-[260px]"
+          className="absolute z-10 aspect-square w-[42%] min-w-[320px]"
         >
-          <Image
-            src="/img/shirt-gray.png"
-            alt=""
-            width={673}
-            height={550}
-            className="h-auto w-full drop-shadow-2xl"
-          />
+          <TShirtViewer className="h-full w-full" />
         </div>
 
         {/* CREATIVITY draw-on (teks brush lime, reveal wipe) */}
