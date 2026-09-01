@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const TShirtViewer = dynamic(() => import("@/components/hero/TShirtViewer"), {
   ssr: false,
@@ -11,25 +13,7 @@ const TShirtViewer = dynamic(() => import("@/components/hero/TShirtViewer"), {
     </div>
   ),
 });
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-/*
- * Catatan: video brush "creativity.mp4" (opaque, lime-on-black) tidak dipakai
- * sebagai overlay karena mix-blend-screen tak reliabel (kotak hitam akibat
- * stacking context). Diganti teks brush + reveal wipe yg lebih robust. Kalau
- * mau brush-stroke persis, perlu WebM/HEVC beralpha — bisa menyusul.
- */
-
-/**
- * Scene 2 — "CREATIVITY reveal" (storyboard). Section tinggi dengan panel yang
- * di-pin (sticky). Saat scroll:
- *  - kaos hero "zoom-out" (mengecil) → tinggal kaos tanpa tulisan,
- *  - teks "CREATIVITY" (video brush lime aslimu, mix-blend-screen) draw-on
- *    ter-scrub oleh scroll,
- *  - teks marquee berjalan terus di belakang (loop, lepas dari scroll).
- * Fallback prefers-reduced-motion: tampilkan state akhir statis.
- */
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 export default function CreativityScene() {
@@ -42,7 +26,19 @@ export default function CreativityScene() {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     gsap.registerPlugin(ScrollTrigger);
 
-    // marquee loop (independen scroll)
+    // Initial positioning for shirt container
+    if (shirtRef.current) {
+      gsap.set(shirtRef.current, {
+        left: "50%",
+        top: "50%",
+        xPercent: -50,
+        yPercent: -50,
+        scale: reduce ? 0.7 : 1.1,
+        transformOrigin: "center center",
+      });
+    }
+
+    // Marquee continuous loop
     let marqueeTween: gsap.core.Tween | null = null;
     if (marqueeRef.current && !reduce) {
       marqueeTween = gsap.to(marqueeRef.current, {
@@ -54,8 +50,6 @@ export default function CreativityScene() {
     }
 
     if (reduce) {
-      // state akhir statis
-      gsap.set(shirtRef.current, { scale: 0.62 });
       gsap.set(creaRef.current, { autoAlpha: 1, clipPath: "inset(0 0% 0 0)" });
       return () => {
         marqueeTween?.kill();
@@ -68,16 +62,20 @@ export default function CreativityScene() {
       end: "bottom bottom",
       onUpdate: (self) => {
         const p = self.progress;
-        // kaos zoom-out: 1.15 → 0.6
-        gsap.set(shirtRef.current, { scale: lerp(1.15, 0.6, p) });
+        // Kaos zoom-out: 1.1 -> 0.65
+        if (shirtRef.current) {
+          gsap.set(shirtRef.current, { scale: lerp(1.1, 0.65, p) });
+        }
         // CREATIVITY fade-in di p 0.12–0.5
         const a = gsap.utils.clamp(0, 1, (p - 0.12) / 0.38);
-        // draw-on wipe kiri→kanan di p 0.15–0.8
+        // Draw-on wipe kiri→kanan di p 0.15–0.8
         const vp = gsap.utils.clamp(0, 1, (p - 0.15) / 0.65);
-        gsap.set(creaRef.current, {
-          autoAlpha: a,
-          clipPath: `inset(0 ${(100 - vp * 100).toFixed(1)}% 0 0)`,
-        });
+        if (creaRef.current) {
+          gsap.set(creaRef.current, {
+            autoAlpha: a,
+            clipPath: `inset(0 ${(100 - vp * 100).toFixed(1)}% 0 0)`,
+          });
+        }
       },
     });
 
@@ -94,8 +92,8 @@ export default function CreativityScene() {
       className="relative h-[260vh]"
       aria-label="Creativity"
     >
-      <div className="sticky top-0 flex h-[100svh] items-center justify-center overflow-hidden">
-        {/* marquee di belakang */}
+      <div className="sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden">
+        {/* Marquee di belakang */}
         <div className="pointer-events-none absolute inset-0 flex items-center overflow-hidden">
           <div
             ref={marqueeRef}
@@ -110,10 +108,10 @@ export default function CreativityScene() {
           </div>
         </div>
 
-        {/* kaos 3D interaktif — drag untuk putar */}
+        {/* Kaos 3D interaktif — centered & drag to rotate */}
         <div
           ref={shirtRef}
-          className="absolute z-10 aspect-square w-[42%] min-w-[320px]"
+          className="absolute left-1/2 top-1/2 z-10 aspect-square w-[48vw] max-w-[600px] min-w-[320px] -translate-x-1/2 -translate-y-1/2"
         >
           <TShirtViewer className="h-full w-full" />
         </div>

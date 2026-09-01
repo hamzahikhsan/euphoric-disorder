@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useRef, useEffect, useState, useCallback } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { OrbitControls, useGLTF, Center } from "@react-three/drei";
+import { Suspense, useRef, useEffect, useState, useMemo, useCallback } from "react";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { OrbitControls, useGLTF } from "@react-three/drei";
 import * as THREE from "three";
 import Image from "next/image";
 
@@ -14,38 +14,19 @@ import Image from "next/image";
  */
 
 const MODEL_URL = "/models/tshirt-1k.glb";
+const DRACO_PATH = "/draco/";
 
 /* ---------- Model component ---------- */
-function TShirtModel() {
-  const { scene } = useGLTF(MODEL_URL);
+function TShirtModel({ onLoaded }: { onLoaded?: () => void }) {
+  const { scene } = useGLTF(MODEL_URL, DRACO_PATH);
   const groupRef = useRef<THREE.Group>(null);
-  const { camera } = useThree();
 
-  useEffect(() => {
-    // Auto-center & auto-scale berdasarkan bounding box model
-    const box = new THREE.Box3().setFromObject(scene);
-    const center = box.getCenter(new THREE.Vector3());
-    const size = box.getSize(new THREE.Vector3());
+  // Clone scene and auto-center / auto-scale in useMemo
+  const { modelClone, scale } = useMemo(() => {
+    const clone = scene.clone(true);
 
-    // Pindahkan scene agar center-nya di origin
-    scene.position.sub(center);
-
-    // Hitung scale supaya model pas di viewport
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const targetSize = 2.4; // ukuran target di world units
-    const scaleFactor = targetSize / maxDim;
-
-    if (groupRef.current) {
-      groupRef.current.scale.setScalar(scaleFactor);
-    }
-
-    // Adjust camera distance
-    const dist = targetSize / (2 * Math.tan((Math.PI * 40) / 360));
-    camera.position.set(0, 0, dist * 1.2);
-    camera.updateProjectionMatrix();
-
-    // Pastikan material menerima cahaya dengan baik
-    scene.traverse((child) => {
+    // Setup materials, shadows, and fabric texture enhancement
+    clone.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         mesh.castShadow = true;
@@ -57,62 +38,67 @@ function TShirtModel() {
           materials.forEach((mat) => {
             if (mat instanceof THREE.MeshStandardMaterial) {
               mat.side = THREE.DoubleSide;
-              mat.envMapIntensity = 0.8;
+              mat.roughness = 0.7;
+              mat.metalness = 0.1;
+              mat.envMapIntensity = 1.0;
               mat.needsUpdate = true;
             }
           });
         }
       }
     });
-  }, [scene, camera]);
+
+    // Compute bounding box
+    const box = new THREE.Box3().setFromObject(clone);
+    const center = box.getCenter(new THREE.Vector3());
+    const size = box.getSize(new THREE.Vector3());
+
+    // Center model precisely at origin (0, 0, 0)
+    clone.position.set(-center.x, -center.y, -center.z);
+
+    // Target visual size: 1.85 units (leaves ~28% margin inside canvas for collar, sleeves & floating animation)
+    const maxDim = Math.max(size.x, size.y, size.z) || 1;
+    const targetScale = 1.85 / maxDim;
+
+    return { modelClone: clone, scale: targetScale };
+  }, [scene]);
+
+  useEffect(() => {
+    if (onLoaded) onLoaded();
+  }, [onLoaded]);
 
   // Floating animation halus
   useFrame((state) => {
     if (groupRef.current) {
       groupRef.current.position.y =
-        Math.sin(state.clock.elapsedTime * 0.6) * 0.04;
+        Math.sin(state.clock.elapsedTime * 0.8) * 0.035;
     }
   });
 
   return (
-    <group ref={groupRef}>
-      <primitive object={scene} />
+    <group ref={groupRef} scale={scale} position={[0, 0, 0]}>
+      <primitive object={modelClone} />
     </group>
   );
 }
 
 /* ---------- Scene content (di dalam Canvas) ---------- */
 function SceneContent({ onLoaded }: { onLoaded: () => void }) {
-  useEffect(() => {
-    onLoaded();
-  }, [onLoaded]);
-
   return (
     <>
-      {/* Lighting */}
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[5, 8, 5]} intensity={1.4} castShadow />
-      <directionalLight
-        position={[-4, 3, -2]}
-        intensity={0.5}
-        color="#CDFF00"
-      />
-      <pointLight position={[0, -3, 4]} intensity={0.3} color="#EDEBDD" />
-
-      {/* Hemisphere light untuk fill natural */}
-      <hemisphereLight
-        color="#EDEBDD"
-        groundColor="#2C3221"
-        intensity={0.4}
-      />
+      {/* Studio Lighting Setup for Streetwear Fabric */}
+      <ambientLight intensity={1.1} />
+      <directionalLight position={[4, 6, 4]} intensity={2.0} castShadow />
+      <directionalLight position={[-4, 3, -3]} intensity={0.9} color="#CDFF00" />
+      <directionalLight position={[0, -3, 3]} intensity={0.6} color="#EDEBDD" />
+      <pointLight position={[0, 1, 3.5]} intensity={0.9} color="#FFFFFF" />
 
       {/* Model */}
-      <Center>
-        <TShirtModel />
-      </Center>
+      <TShirtModel onLoaded={onLoaded} />
 
-      {/* Orbit controls — rotate only, no zoom/pan */}
+      {/* Orbit controls — rotate only, centered on (0, 0, 0) */}
       <OrbitControls
+        target={[0, 0, 0]}
         enableZoom={false}
         enablePan={false}
         autoRotate
@@ -138,7 +124,7 @@ function LoadingSpinner() {
 
   return (
     <mesh ref={meshRef}>
-      <torusGeometry args={[0.5, 0.06, 16, 48, Math.PI * 1.5]} />
+      <torusGeometry args={[0.35, 0.04, 16, 48, Math.PI * 1.5]} />
       <meshBasicMaterial color="#CDFF00" transparent opacity={0.7} />
     </mesh>
   );
@@ -190,10 +176,10 @@ export default function TShirtViewer({
     <div className={`relative ${className}`} style={{ touchAction: "none" }}>
       <Canvas
         camera={{
-          position: [0, 0, 4],
+          position: [0, 0, 3.5],
           fov: 40,
-          near: 0.01,
-          far: 200,
+          near: 0.1,
+          far: 50,
         }}
         gl={{
           alpha: true,
@@ -202,10 +188,10 @@ export default function TShirtViewer({
           preserveDrawingBuffer: true,
         }}
         dpr={[1, 2]}
-        style={{ background: "transparent" }}
+        style={{ background: "transparent", width: "100%", height: "100%" }}
         onCreated={({ gl }) => {
           gl.toneMapping = THREE.ACESFilmicToneMapping;
-          gl.toneMappingExposure = 1.2;
+          gl.toneMappingExposure = 1.35;
         }}
       >
         <Suspense fallback={<LoadingSpinner />}>
@@ -215,14 +201,14 @@ export default function TShirtViewer({
 
       {/* Hint interaksi — tampil setelah model loaded */}
       <div
-        className={`pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 transition-opacity duration-700 ${
+        className={`pointer-events-none absolute -bottom-6 md:-bottom-8 left-1/2 -translate-x-1/2 transition-opacity duration-700 ${
           modelLoaded ? "opacity-100" : "opacity-0"
         }`}
       >
-        <span className="label-mono inline-flex items-center gap-2 rounded-pill bg-forest-deep/70 px-3 py-1.5 text-bone/70 backdrop-blur-sm">
+        <span className="label-mono inline-flex items-center gap-2 rounded-pill bg-forest-deep/80 border border-bone/15 px-3 py-1 text-bone/80 backdrop-blur-sm text-caption">
           <svg
-            width="14"
-            height="14"
+            width="12"
+            height="12"
             viewBox="0 0 24 24"
             fill="none"
             aria-hidden
@@ -248,4 +234,4 @@ export default function TShirtViewer({
 }
 
 // Preload model
-useGLTF.preload(MODEL_URL);
+useGLTF.preload(MODEL_URL, DRACO_PATH);
