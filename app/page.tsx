@@ -15,7 +15,27 @@ import SocialAlbum from "@/components/sections/SocialAlbum";
 import Footer from "@/components/sections/Footer";
 
 export const metadata: Metadata = {
-  title: "Creativity of Fashion",
+  title: "Creativity of Fashion — Streetwear Kriminologi & Custom Apparel",
+  description:
+    "Official website of Euphoric Disorder: Streetwear bertema kriminologi (Comedy, Criminologist, Creativity) & jasa sablon custom apparel di Kemayoran, Jakarta Pusat.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "euphoric.disorder — Creativity of Fashion",
+    description:
+      "Kejahatan sebagai bahan kajian. Kaos sebagai medium. Comedy · Criminologist · Creativity.",
+    url: "/",
+    type: "website",
+    images: [
+      {
+        url: "/img/shirt-gray.png",
+        width: 1200,
+        height: 630,
+        alt: "Euphoric Disorder Streetwear",
+      },
+    ],
+  },
 };
 
 /**

@@ -5,12 +5,29 @@ import SurfaceController from "@/components/system/SurfaceController";
 import AnimatedPattern from "@/components/pattern/AnimatedPattern";
 import Navbar from "@/components/nav/Navbar";
 import Footer from "@/components/sections/Footer";
+import JsonLd from "@/components/seo/JsonLd";
 import { site } from "@/content/site";
 
 export const metadata: Metadata = {
-  title: "About Us — The Dossier",
+  title: "The Dossier — Tentang Kami & Filosofi Kriminologi",
   description:
-    "An Archive of Disorder: kejahatan sebagai bahan kajian, kaos sebagai medium. Membedah filosofi dan sejarah euphoric.disorder.",
+    "An Archive of Disorder: kejahatan sebagai bahan kajian, kaos sebagai medium. Membedah filosofi 3 pilar (@Comedy, @Criminologist, @Creativity) dan sejarah brand sejak 2021.",
+  alternates: {
+    canonical: "/about",
+  },
+  openGraph: {
+    title: "The Dossier — Tentang Kami | euphoric.disorder",
+    description:
+      "Arsip kriminologi dan streetwear: @Comedy, @Criminologist, @Creativity.",
+    url: "/about",
+    type: "article",
+    images: [{ url: "/img/about-jakcloth.png", width: 1200, height: 630, alt: "Tentang Euphoric Disorder" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "The Dossier — Tentang Kami | euphoric.disorder",
+    description: "Membedah filosofi dan sejarah streetwear kriminologi euphoric.disorder.",
+  },
 };
 
 const PILLARS = [
@@ -52,6 +69,13 @@ const TIMELINE = [
 export default function AboutPage() {
   return (
     <>
+      <JsonLd
+        type="breadcrumb"
+        breadcrumbs={[
+          { name: "Home", url: "/" },
+          { name: "About Us", url: "/about" },
+        ]}
+      />
       <SmoothScroll />
       <SurfaceController />
       <AnimatedPattern />
