@@ -9,6 +9,7 @@ const MAP: Record<ProductStatus, { label: string; color: string }> = {
   PO: { label: "Pre-Order", color: "text-status-limited border-status-limited" },
   LIMITED: { label: "Limited", color: "text-status-limited border-status-limited" },
   SOLD: { label: "Sold Out", color: "text-status-sold border-status-sold" },
+  ARCHIVED: { label: "Arsip", color: "text-text-tertiary border-line" },
 };
 
 export function StatusBadge({ status }: { status: ProductStatus | null }) {

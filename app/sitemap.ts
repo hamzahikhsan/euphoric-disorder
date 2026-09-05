@@ -1,10 +1,11 @@
 import { MetadataRoute } from "next";
+import { products } from "@/content/products";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://euphoric-disorder-eight.vercel.app";
   const lastModified = new Date();
 
-  return [
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${siteUrl}`,
       lastModified,
@@ -30,4 +31,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.8,
     },
   ];
+
+  const productRoutes: MetadataRoute.Sitemap = products.map((p) => ({
+    url: `${siteUrl}/product/${p.slug}`,
+    lastModified,
+    changeFrequency: "weekly",
+    priority: 0.85,
+  }));
+
+  return [...staticRoutes, ...productRoutes];
 }

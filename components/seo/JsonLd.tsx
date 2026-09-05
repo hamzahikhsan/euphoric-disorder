@@ -1,13 +1,14 @@
 import { site } from "@/content/site";
-import { products } from "@/content/products";
+import { products, type Product } from "@/content/products";
 
 interface JsonLdProps {
-  type?: "organization" | "store" | "productCatalog" | "faq" | "breadcrumb";
+  type?: "organization" | "store" | "productCatalog" | "product" | "faq" | "breadcrumb";
+  product?: Product;
   breadcrumbs?: Array<{ name: string; url: string }>;
   faqs?: Array<{ q: string; a: string }>;
 }
 
-export default function JsonLd({ type = "organization", breadcrumbs, faqs }: JsonLdProps) {
+export default function JsonLd({ type = "organization", product, breadcrumbs, faqs }: JsonLdProps) {
   const siteUrl = "https://euphoric-disorder-eight.vercel.app";
 
   if (type === "organization" || type === "store") {
@@ -57,6 +58,41 @@ export default function JsonLd({ type = "organization", breadcrumbs, faqs }: Jso
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+      />
+    );
+  }
+
+  if (type === "product" && product) {
+    const productSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      description: product.story || product.description,
+      image: product.images.front.startsWith("http") ? product.images.front : `${siteUrl}${product.images.front}`,
+      category: product.filedUnder.join(", "),
+      sku: product.caseId || product.slug,
+      brand: {
+        "@type": "Brand",
+        name: "Euphoric Disorder",
+      },
+      offers: {
+        "@type": "Offer",
+        price: product.priceIDR ?? 55000,
+        priceCurrency: "IDR",
+        availability:
+          product.status === "SOLD"
+            ? "https://schema.org/OutOfStock"
+            : product.status === "PO"
+            ? "https://schema.org/PreOrder"
+            : "https://schema.org/InStock",
+        url: `${siteUrl}/product/${product.slug}`,
+      },
+    };
+
+    return (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
       />
     );
   }

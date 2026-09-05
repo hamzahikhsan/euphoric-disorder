@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import SmoothScroll from "@/components/system/SmoothScroll";
 import SurfaceController from "@/components/system/SurfaceController";
 import AnimatedPattern from "@/components/pattern/AnimatedPattern";
@@ -121,13 +122,12 @@ export default function ProductCatalogClient() {
                   </div>
 
                   <div className="mt-8 flex flex-wrap items-center gap-4">
-                    <button
-                      type="button"
-                      onClick={() => setSelectedProduct(candyHoodie)}
+                    <Link
+                      href={`/product/${candyHoodie.slug}`}
                       className="rounded-pill bg-lime px-6 py-3 font-display text-body1 font-bold text-ink hover:scale-105 transition-transform"
                     >
                       Buka Berkas Perkara →
-                    </button>
+                    </Link>
                     <a
                       href={site.shopeeUrl}
                       target="_blank"
@@ -159,10 +159,10 @@ export default function ProductCatalogClient() {
                 const isService = p.filedUnder.includes("Custom Sablon") || p.filedUnder.includes("Service");
 
                 return (
-                  <div
+                  <Link
                     key={p.slug}
-                    onClick={() => setSelectedProduct(p)}
-                    className="group flex flex-col rounded-2xl border border-fg/15 bg-fg/5 text-fg cursor-pointer overflow-hidden transition-all duration-300 hover:border-accent hover:shadow-2xl hover:-translate-y-1"
+                    href={`/product/${p.slug}`}
+                    className="group flex flex-col rounded-2xl border border-fg/15 bg-fg/5 text-fg overflow-hidden transition-all duration-300 hover:border-accent hover:shadow-2xl hover:-translate-y-1"
                   >
                     {/* Header Card */}
                     <div className="flex items-center justify-between border-b border-fg/10 px-4 py-3 bg-fg/5">
@@ -226,7 +226,7 @@ export default function ProductCatalogClient() {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -325,6 +325,14 @@ export default function ProductCatalogClient() {
 
                   {/* CTAs (Tailored for Custom Sablon vs Regular Shop items) */}
                   <div className="mt-8 flex flex-col gap-3">
+                    {/* Link ke Dedicated Detail Page */}
+                    <Link
+                      href={`/product/${selectedProduct.slug}`}
+                      className="inline-flex items-center justify-center gap-2 rounded-pill border-2 border-lime bg-lime/15 px-6 py-3 font-display text-body2 font-extrabold text-lime hover:bg-lime hover:text-ink transition-all shadow-md"
+                    >
+                      📄 Buka Berkas Lengkap &amp; Size Guide →
+                    </Link>
+
                     {selectedProduct.filedUnder.includes("Custom Sablon") ? (
                       <>
                         <a
@@ -333,7 +341,7 @@ export default function ProductCatalogClient() {
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center gap-2 rounded-pill bg-lime px-6 py-3.5 font-display text-body1 font-bold text-ink transition-transform hover:scale-[1.02] active:scale-95"
                         >
-                          💬 Konsultasi &amp; Order Custom via WhatsApp
+                          💬 Konsultasi &amp; Order via WhatsApp
                         </a>
                         <a
                           href="/contact"
