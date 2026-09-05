@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import ContactPageClient from "@/components/contact/ContactPageClient";
-import { FAQS } from "@/content/faqs";
+import { getPublicFaqs } from "@/lib/supabase/site";
 import JsonLd from "@/components/seo/JsonLd";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Field Station — Kontak, Custom Inquiry & Markas Kemayoran",
@@ -42,7 +44,9 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const faqs = await getPublicFaqs();
+
   return (
     <>
       <JsonLd
@@ -52,8 +56,8 @@ export default function ContactPage() {
           { name: "Contact & Field Station", url: "/contact" },
         ]}
       />
-      <JsonLd type="faq" faqs={FAQS} />
-      <ContactPageClient />
+      <JsonLd type="faq" faqs={faqs} />
+      <ContactPageClient faqs={faqs} />
     </>
   );
 }

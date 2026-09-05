@@ -7,7 +7,7 @@ import AnimatedPattern from "@/components/pattern/AnimatedPattern";
 import Navbar from "@/components/nav/Navbar";
 import Footer from "@/components/sections/Footer";
 import { site, waLink } from "@/content/site";
-import { FAQS } from "@/content/faqs";
+import { FAQS, type FAQItem } from "@/content/faqs";
 
 // Helper sanitasi input dari potensi XSS injection
 function sanitizeInput(val: string): string {
@@ -25,7 +25,11 @@ function sanitizeInput(val: string): string {
     .trim();
 }
 
-export default function ContactPageClient() {
+export default function ContactPageClient({
+  faqs = FAQS,
+}: {
+  faqs?: FAQItem[];
+} = {}) {
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
@@ -315,7 +319,7 @@ export default function ContactPageClient() {
             </div>
 
             <div className="mx-auto max-w-3xl space-y-4">
-              {FAQS.map((faq, idx) => (
+              {faqs.map((faq, idx) => (
                 <div
                   key={idx}
                   className="rounded-xl border border-fg/15 bg-fg/5 p-6 shadow-md transition-all hover:border-accent"

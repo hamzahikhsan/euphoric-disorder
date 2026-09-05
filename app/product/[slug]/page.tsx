@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { products, getProduct } from "@/content/products";
+import { products } from "@/content/products";
+import { getPublicProduct, getPublicProducts } from "@/lib/supabase/products";
 import ProductDetailClient from "@/components/product/ProductDetailClient";
 import JsonLd from "@/components/seo/JsonLd";
 
@@ -10,14 +11,17 @@ interface ProductPageProps {
   };
 }
 
-export function generateStaticParams() {
-  return products.map((product) => ({
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  const allProducts = await getPublicProducts();
+  return allProducts.map((product) => ({
     slug: product.slug,
   }));
 }
 
-export function generateMetadata({ params }: ProductPageProps): Metadata {
-  const product = getProduct(params.slug);
+export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
+  const product = await getPublicProduct(params.slug);
   if (!product) return {};
 
   const title = `${product.name} (${product.caseId}) — Evidence Locker`;
@@ -53,8 +57,8 @@ export function generateMetadata({ params }: ProductPageProps): Metadata {
   };
 }
 
-export default function ProductDetailPage({ params }: ProductPageProps) {
-  const product = getProduct(params.slug);
+export default async function ProductDetailPage({ params }: ProductPageProps) {
+  const product = await getPublicProduct(params.slug);
 
   if (!product) {
     notFound();

@@ -44,7 +44,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function ProductCatalogPage() {
+import { getPublicProducts } from "@/lib/supabase/products";
+
+export const revalidate = 60;
+
+export default async function ProductCatalogPage() {
+  const products = await getPublicProducts();
+
   return (
     <>
       <JsonLd
@@ -55,7 +61,7 @@ export default function ProductCatalogPage() {
         ]}
       />
       <JsonLd type="productCatalog" />
-      <ProductCatalogClient />
+      <ProductCatalogClient initialProducts={products} />
     </>
   );
 }

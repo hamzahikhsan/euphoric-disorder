@@ -12,20 +12,25 @@ import { products, type Product } from "@/content/products";
 import { site, formatPrice, waLink } from "@/content/site";
 import { StatusBadge } from "@/components/product/StatusBadge";
 
-export default function ProductCatalogClient() {
+export default function ProductCatalogClient({
+  initialProducts,
+}: {
+  initialProducts?: Product[];
+} = {}) {
+  const allProducts = initialProducts && initialProducts.length > 0 ? initialProducts : products;
   const [activeFilter, setActiveFilter] = useState<string>("All");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const categories = ["All", "War on Drugs", "Candy", "Custom Sablon", "Limited"];
 
-  const filteredProducts = products.filter((p) => {
+  const filteredProducts = allProducts.filter((p) => {
     if (activeFilter === "All") return true;
     return p.filedUnder.some(
       (cat) => cat.toLowerCase() === activeFilter.toLowerCase()
     );
   });
 
-  const candyHoodie = products.find((p) => p.slug === "candy-hoodie-ed");
+  const candyHoodie = allProducts.find((p) => p.slug === "candy-hoodie-ed");
 
   return (
     <>
