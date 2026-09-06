@@ -98,7 +98,6 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // Auto-generate slug and caseId on name change for new products
   const handleNameChange = (val: string) => {
     setName(val);
     if (!isEdit) {
@@ -120,7 +119,11 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
       return;
     }
     if (!slug.trim()) {
-      setErrorMsg("Slug produk wajib diisi.");
+      setErrorMsg("Slug URL wajib diisi.");
+      return;
+    }
+    if (!priceIdr || Number(priceIdr) <= 0) {
+      setErrorMsg("Harga produk valid wajib diisi.");
       return;
     }
 
@@ -129,6 +132,7 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
     setSuccessMsg(null);
 
     const payload = {
+      id: initialData?.id,
       name,
       slug,
       subject,
@@ -145,7 +149,7 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
       fit_silhouette: fitSilhouette,
       print_technique: printTechnique,
       print_location: printLocation,
-      price_idr: priceIdr === "" ? null : Number(priceIdr),
+      price_idr: Number(priceIdr),
       original_price_idr: originalPriceIdr === "" ? null : Number(originalPriceIdr),
       colors,
       sizes_available: sizesAvailable,
@@ -153,61 +157,102 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
       image_front: imageFront,
       image_back: imageBack || null,
       image_details: imageDetails,
+      image_lookbook: initialData?.image_lookbook || [],
       care_instructions: careInstructions,
       batch_info: batchInfo,
-      model_info: modelInfo,
-      shopee_url: shopeeUrl,
-      sort_order: Number(sortOrder),
+      model_info: modelInfo || null,
+      shopee_url: shopeeUrl || null,
+      sort_order: Number(sortOrder) || 1,
       is_published: publishStatus,
     };
 
     const res = await saveProduct(payload, isEdit);
 
     setLoading(false);
-    if (!res.ok) {
-      setErrorMsg(res.error || "Gagal menyimpan produk.");
-    } else {
+
+    if (res.ok) {
       setSuccessMsg(
-        publishStatus
-          ? "✅ Berkas perkara berhasil dipublikasikan!"
-          : "✅ Berkas perkara tersimpan sebagai DRAFT!"
+        isEdit
+          ? "Berkas perkara berhasil diperbarui!"
+          : "Berkas perkara baru berhasil didaftarkan!"
       );
       setTimeout(() => {
         router.push("/admin/produk");
         router.refresh();
-      }, 1000);
+      }, 800);
+    } else {
+      setErrorMsg(`Gagal menyimpan: ${res.error}`);
     }
   };
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className="space-y-8 max-w-4xl pb-16">
-      {/* Top Banner Alert */}
-      {errorMsg && (
-        <div className="p-4 bg-[#FF6B6B]/15 border border-[#FF6B6B]/40 text-[#FF6B6B] text-sm font-[family-name:var(--font-space-mono)]">
-          ⚠ {errorMsg}
+    <div className="space-y-8 max-w-5xl font-mono">
+      {/* Sticky Action Topbar */}
+      <div className="sticky top-16 z-20 bg-forest/95 backdrop-blur-md border border-bone/15 p-4 flex flex-wrap items-center justify-between gap-4 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center gap-3">
+          <Link
+            href="/admin/produk"
+            className="text-xs text-bone-dim hover:text-lime uppercase tracking-wider transition-colors"
+          >
+            ← Kembali
+          </Link>
+          <span className="text-bone-dim/40">•</span>
+          <span className="text-xs font-bold text-bone font-display">
+            {isEdit ? `Edit: ${initialData?.name || slug}` : "Registrasi Bukti Baru"}
+          </span>
         </div>
-      )}
-      {successMsg && (
-        <div className="p-4 bg-[#51CF66]/15 border border-[#51CF66]/40 text-[#51CF66] text-sm font-[family-name:var(--font-space-mono)]">
-          {successMsg}
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleSubmit(false)}
+            className="px-4 py-2 border border-bone/20 text-bone hover:border-lime hover:text-lime text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+          >
+            {loading ? "Menyimpan..." : "Simpan Draft"}
+          </button>
+
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleSubmit(true)}
+            className="px-5 py-2 bg-lime text-forest-deep text-xs font-bold uppercase tracking-wider hover:bg-lime/90 active:scale-[0.98] transition-all disabled:opacity-50 shadow-[0_2px_12px_rgba(205,255,0,0.2)]"
+          >
+            {loading ? "Menyimpan..." : "Siarkan (Live) ↗"}
+          </button>
+        </div>
+      </div>
+
+      {/* Alert Messages */}
+      {errorMsg && (
+        <div className="p-4 bg-red-950/40 border border-red-500/50 text-red-400 text-xs flex items-center gap-3">
+          <span className="text-base">⚠️</span>
+          <span>{errorMsg}</span>
         </div>
       )}
 
-      {/* 1. IDENTITAS BERKAS */}
-      <section className="bg-[#25262B] border border-[#373A40] p-6 space-y-4">
-        <div className="border-b border-[#373A40] pb-3 flex items-center justify-between">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)] flex items-center gap-2">
-            <span className="text-[#CDFF00]">01.</span> Identitas Berkas Perkara
+      {successMsg && (
+        <div className="p-4 bg-lime/10 border border-lime/50 text-lime text-xs flex items-center gap-3">
+          <span className="text-base">✓</span>
+          <span>{successMsg}</span>
+        </div>
+      )}
+
+      {/* 1. IDENTITAS BERKAS PERKARA */}
+      <section className="bg-forest border border-bone/15 p-6 sm:p-8 space-y-5">
+        <div className="border-b border-bone/10 pb-4 flex items-center justify-between">
+          <h2 className="text-bone text-base sm:text-lg font-bold font-display flex items-center gap-2">
+            <span className="text-lime">01.</span> Identitas Berkas Perkara
           </h2>
-          <span className="text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)] uppercase">
+          <span className="text-[10px] text-bone-dim uppercase tracking-wider">
             Data Utama
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Nama Produk *
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Nama Produk / Artikel *
             </label>
             <input
               type="text"
@@ -215,13 +260,13 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
               placeholder="Contoh: Kaos #WarOnDrugs — M15"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Slug URL *
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Slug URL (Unik) *
             </label>
             <input
               type="text"
@@ -229,12 +274,12 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
               placeholder="warondrugs-m15"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
               Nomor Subjek
             </label>
             <input
@@ -242,46 +287,46 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
               placeholder="015"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Kode Arsip Kasus
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Kode Arsip Kasus (Case ID)
             </label>
             <input
               type="text"
               value={caseId}
               onChange={(e) => setCaseId(e.target.value)}
               placeholder="ED-CASE-015"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-lime text-xs font-bold focus:border-lime focus:outline-none"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+          <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
             Tagline / Slogan Ringkas
           </label>
           <input
             type="text"
             value={tagline}
             onChange={(e) => setTagline(e.target.value)}
-            placeholder="Satu kalimat tajam perihal produk..."
-            className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+            placeholder="Satu kalimat tajam perihal latar belakang karya..."
+            className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Status Ketersediaan
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Status Ketersediaan Rilis
             </label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as ProductRow["status"])}
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             >
               {STATUS_OPTIONS.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -293,28 +338,28 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
 
           <div>
             <InputTag
-              label="Kategori / Label Berkas"
+              label="Kategori / Klasifikasi Kasus"
               tags={filedUnder}
               onChange={setFiledUnder}
-              placeholder="Ketik tag lalu tekan enter..."
+              placeholder="War on Drugs, Boxy T-Shirt..."
             />
           </div>
         </div>
       </section>
 
-      {/* 2. NARASI & DESKRIPSI */}
-      <section className="bg-[#25262B] border border-[#373A40] p-6 space-y-4">
-        <div className="border-b border-[#373A40] pb-3 flex items-center justify-between">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)] flex items-center gap-2">
-            <span className="text-[#CDFF00]">02.</span> Narasi & Deskripsi
+      {/* 2. NARASI & CERITA FORENSIK */}
+      <section className="bg-forest border border-bone/15 p-6 sm:p-8 space-y-5">
+        <div className="border-b border-bone/10 pb-4 flex items-center justify-between">
+          <h2 className="text-bone text-base sm:text-lg font-bold font-display flex items-center gap-2">
+            <span className="text-lime">02.</span> Narasi & Deskripsi Forensik
           </h2>
-          <span className="text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)] uppercase">
-            Storytelling Forensik
+          <span className="text-[10px] text-bone-dim uppercase tracking-wider">
+            Storytelling
           </span>
         </div>
 
         <div>
-          <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+          <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
             Ringkasan Singkat (Untuk Kartu Katalog)
           </label>
           <textarea
@@ -322,51 +367,51 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Deskripsi singkat 1-2 kalimat untuk preview katalog..."
-            className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+            className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
           />
         </div>
 
         <div>
-          <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-            Cerita Forensik Mendalam (Halaman Detail)
+          <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+            Cerita Forensik Mendalam (Halaman Detail Artikel)
           </label>
           <textarea
-            rows={5}
+            rows={6}
             value={story}
             onChange={(e) => setStory(e.target.value)}
-            placeholder="Narasi latar belakang, filosofi desain, kritik sosial..."
-            className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none leading-relaxed"
+            placeholder="Narasi latar belakang, filosofi kejahatan sebagai bahan kajian, kritik sosial, dan detail visual..."
+            className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none leading-relaxed"
           />
         </div>
       </section>
 
-      {/* 3. SPESIFIKASI TEKNIS */}
-      <section className="bg-[#25262B] border border-[#373A40] p-6 space-y-4">
-        <div className="border-b border-[#373A40] pb-3 flex items-center justify-between">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)] flex items-center gap-2">
-            <span className="text-[#CDFF00]">03.</span> Spesifikasi Bahan & Sablon
+      {/* 3. SPESIFIKASI BAHAN & SABLON */}
+      <section className="bg-forest border border-bone/15 p-6 sm:p-8 space-y-5">
+        <div className="border-b border-bone/10 pb-4 flex items-center justify-between">
+          <h2 className="text-bone text-base sm:text-lg font-bold font-display flex items-center gap-2">
+            <span className="text-lime">03.</span> Spesifikasi Bahan & Sablon
           </h2>
-          <span className="text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)] uppercase">
-            Spesifikasi
+          <span className="text-[10px] text-bone-dim uppercase tracking-wider">
+            Kualitas Fisik
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Bahan Utama
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Bahan Utama Kain
             </label>
             <input
               type="text"
               value={material}
               onChange={(e) => setMaterial(e.target.value)}
               placeholder="Cotton Combed 24s"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
               Gramasi (GSM)
             </label>
             <input
@@ -374,12 +419,12 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
               value={fabricGsm}
               onChange={(e) => setFabricGsm(e.target.value === "" ? "" : Number(e.target.value))}
               placeholder="185"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
               Siluet Potongan
             </label>
             <input
@@ -387,14 +432,14 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
               value={fitSilhouette}
               onChange={(e) => setFitSilhouette(e.target.value)}
               placeholder="Boxy Oversized Fit"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
               Komposisi Kain
             </label>
             <input
@@ -402,108 +447,109 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
               value={fabricComposition}
               onChange={(e) => setFabricComposition(e.target.value)}
               placeholder="100% Ring Spun Combed Cotton"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
               Karakter Handfeel
             </label>
             <input
               type="text"
               value={fabricFeel}
               onChange={(e) => setFabricFeel(e.target.value)}
-              placeholder="Halus, jatuh tegap, adem."
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              placeholder="Halus, jatuh tegap, sejuk."
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
               Teknik Sablon
             </label>
             <input
               type="text"
               value={printTechnique}
               onChange={(e) => setPrintTechnique(e.target.value)}
-              placeholder="Plastisol Screen Printing / DTF"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              placeholder="Plastisol Screen Printing"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
             <InputTag
-              label="Titik Sablon"
+              label="Titik Penempatan Sablon"
               tags={printLocation}
               onChange={setPrintLocation}
-              placeholder="Dada, Punggung, Lengan..."
+              placeholder="Dada Depan, Punggung..."
             />
           </div>
         </div>
       </section>
 
-      {/* 4. HARGA & VARIASI */}
-      <section className="bg-[#25262B] border border-[#373A40] p-6 space-y-6">
-        <div className="border-b border-[#373A40] pb-3 flex items-center justify-between">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)] flex items-center gap-2">
-            <span className="text-[#CDFF00]">04.</span> Harga & Variasi
+      {/* 4. HARGA, VARIASI WARNA & UKURAN */}
+      <section className="bg-forest border border-bone/15 p-6 sm:p-8 space-y-6">
+        <div className="border-b border-bone/10 pb-4 flex items-center justify-between">
+          <h2 className="text-bone text-base sm:text-lg font-bold font-display flex items-center gap-2">
+            <span className="text-lime">04.</span> Harga & Variasi Produk
           </h2>
-          <span className="text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)] uppercase">
-            Penetapan Harga & Ukuran
+          <span className="text-[10px] text-bone-dim uppercase tracking-wider">
+            Katalog & Fitting
           </span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Pricing */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Harga Jual (IDR)
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Harga Jual (IDR) *
             </label>
             <input
               type="number"
+              required
               value={priceIdr}
               onChange={(e) => setPriceIdr(e.target.value === "" ? "" : Number(e.target.value))}
-              placeholder="145000 (kosongkan = Harga Menyusul)"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#CDFF00] text-sm font-bold font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              placeholder="145000"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-lime text-sm font-bold focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Harga Coret Sebelum Diskon (Opsional)
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Harga Coret Diskon (Opsional)
             </label>
             <input
               type="number"
               value={originalPriceIdr}
-              onChange={(e) => setOriginalPriceIdr(e.target.value === "" ? "" : Number(e.target.value))}
-              placeholder="175000"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#909296] text-sm font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              onChange={(e) =>
+                setOriginalPriceIdr(e.target.value === "" ? "" : Number(e.target.value))
+              }
+              placeholder="185000"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-sm focus:border-lime focus:outline-none"
             />
           </div>
         </div>
 
-        {/* Variasi Warna */}
-        <EditorWarnaRepeater colors={colors} onChange={setColors} />
-
-        {/* Ukuran Tersedia */}
+        {/* Sizes Available */}
         <div>
-          <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-2">
-            Ukuran Tersedia (Checklist)
+          <label className="block text-bone-dim text-xs uppercase tracking-wider mb-2">
+            Pilihan Ukuran Tersedia
           </label>
           <div className="flex flex-wrap gap-2">
             {AVAILABLE_SIZES.map((sz) => {
               const active = sizesAvailable.includes(sz);
               return (
                 <button
-                  type="button"
                   key={sz}
+                  type="button"
                   onClick={() => handleSizeToggle(sz)}
-                  className={`px-3 py-1.5 text-xs font-bold font-[family-name:var(--font-space-mono)] border transition-all ${
+                  className={`w-12 h-10 border text-xs font-bold transition-all ${
                     active
-                      ? "bg-[#CDFF00] text-[#1A1B1E] border-[#CDFF00]"
-                      : "bg-[#1A1B1E] text-[#909296] border-[#373A40] hover:border-[#F1F3F5]"
+                      ? "bg-lime text-forest-deep border-lime shadow-sm"
+                      : "bg-forest-deep text-bone-dim border-bone/20 hover:text-bone hover:border-lime/50"
                   }`}
                 >
                   {sz}
@@ -513,182 +559,157 @@ export default function FormProduk({ initialData, isEdit = false }: FormProdukPr
           </div>
         </div>
 
-        {/* Tabel Panduan Ukuran */}
-        <EditorTabelUkuran sizeChart={sizeChart} onChange={setSizeChart} />
+        {/* Color Repeater Component */}
+        <div className="pt-2 border-t border-bone/10">
+          <EditorWarnaRepeater colors={colors} onChange={setColors} />
+        </div>
+
+        {/* Size Chart Matrix */}
+        <div className="pt-2 border-t border-bone/10">
+          <EditorTabelUkuran sizeChart={sizeChart} onChange={setSizeChart} />
+        </div>
       </section>
 
-      {/* 5. MEDIA & FOTO */}
-      <section className="bg-[#25262B] border border-[#373A40] p-6 space-y-4">
-        <div className="border-b border-[#373A40] pb-3 flex items-center justify-between">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)] flex items-center gap-2">
-            <span className="text-[#CDFF00]">05.</span> Foto & Media
+      {/* 5. BUKTI FOTO VISUAL */}
+      <section className="bg-forest border border-bone/15 p-6 sm:p-8 space-y-6">
+        <div className="border-b border-bone/10 pb-4 flex items-center justify-between">
+          <h2 className="text-bone text-base sm:text-lg font-bold font-display flex items-center gap-2">
+            <span className="text-lime">05.</span> Galeri Bukti Foto Visual
           </h2>
-          <span className="text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)] uppercase">
-            Kamera Forensik
+          <span className="text-[10px] text-bone-dim uppercase tracking-wider">
+            Media Storage
           </span>
         </div>
 
         <PemilihMedia
-          label="Foto Depan (Tampak Utama) *"
+          label="Foto Bukti Utama (Tampak Depan) *"
           value={imageFront}
           onChange={setImageFront}
-          helperText="Format WebP / PNG / JPG. Maks 5MB."
+          helperText="Rekomendasi rasio 4:5 atau 1:1, format WebP."
         />
 
         <PemilihMedia
-          label="Foto Belakang (Opsional)"
+          label="Foto Bukti Tampak Belakang (Opsional)"
           value={imageBack}
           onChange={setImageBack}
-          helperText="Tampilan punggung baju jika ada."
+          helperText="Menampilkan detail sablon atau jahitan punggung."
         />
 
-        <div>
-          <InputTag
-            label="Foto Galeri Detail Tambahan (Daftar URL)"
-            tags={imageDetails}
-            onChange={setImageDetails}
-            placeholder="Tempel URL foto detail lalu tekan enter..."
-          />
-        </div>
+        <InputTag
+          label="Foto Bukti Tambahan / Detail Close-up (URL)"
+          tags={imageDetails}
+          onChange={setImageDetails}
+          placeholder="Tempel URL gambar detail lalu tekan Enter..."
+          helperText="Foto tekstur sablon, label woven, hangtag, atau fitting."
+        />
       </section>
 
-      {/* 6. INFO TAMBAHAN & TAUTAN */}
-      <section className="bg-[#25262B] border border-[#373A40] p-6 space-y-4">
-        <div className="border-b border-[#373A40] pb-3 flex items-center justify-between">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)] flex items-center gap-2">
-            <span className="text-[#CDFF00]">06.</span> Info Tambahan & Tautan
+      {/* 6. INFORMASI DISTRIBUSI & MODEL */}
+      <section className="bg-forest border border-bone/15 p-6 sm:p-8 space-y-5">
+        <div className="border-b border-bone/10 pb-4 flex items-center justify-between">
+          <h2 className="text-bone text-base sm:text-lg font-bold font-display flex items-center gap-2">
+            <span className="text-lime">06.</span> Atribut Distribusi & Model
           </h2>
-          <span className="text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)] uppercase">
+          <span className="text-[10px] text-bone-dim uppercase tracking-wider">
             Metadata
           </span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Info Batch Produksi
-            </label>
-            <input
-              type="text"
-              value={batchInfo}
-              onChange={(e) => setBatchInfo(e.target.value)}
-              placeholder="Batch 01 — Limited 50 pcs"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
-            />
-          </div>
-
-          <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-              Info Model / Fitting
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Informasi Model Fitting
             </label>
             <input
               type="text"
               value={modelInfo}
               onChange={(e) => setModelInfo(e.target.value)}
-              placeholder="Model 178 cm / 72 kg mengenakan L"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              placeholder="Contoh: Model pria 178 cm / 72 kg mengenakan Size L"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Status Batch / Rilis
+            </label>
+            <input
+              type="text"
+              value={batchInfo}
+              onChange={(e) => setBatchInfo(e.target.value)}
+              placeholder="Katalog Reguler — Ready Stock Kemayoran"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
         </div>
 
-        <div>
-          <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-1">
-            Tautan Shopee Resmi
-          </label>
-          <input
-            type="url"
-            value={shopeeUrl}
-            onChange={(e) => setShopeeUrl(e.target.value)}
-            placeholder="https://shopee.co.id/compaxgrup"
-            className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
-          />
-        </div>
-
-        <div>
-          <InputTag
-            label="Instruksi Perawatan (Care Instructions)"
-            tags={careInstructions}
-            onChange={setCareInstructions}
-            placeholder="Tambah instruksi perawatan..."
-          />
-        </div>
-      </section>
-
-      {/* 7. KONTROL PUBLIKASI & AKSI SIMPAN */}
-      <section className="bg-[#25262B] border border-[#373A40] p-6 space-y-4">
-        <div className="border-b border-[#373A40] pb-3 flex items-center justify-between">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)] flex items-center gap-2">
-            <span className="text-[#CDFF00]">07.</span> Kontrol Publikasi
-          </h2>
-          <span className="text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)] uppercase">
-            Status Tayang
-          </span>
-        </div>
-
-        <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-[#1A1B1E] border border-[#373A40]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <div className="text-sm font-bold text-[#F1F3F5] font-[family-name:var(--font-nohemi)]">
-              Status Berkas:{" "}
-              {isPublished ? (
-                <span className="text-[#51CF66]">🟢 LIVE (Dipublikasikan ke Web)</span>
-              ) : (
-                <span className="text-[#FFD43B]">🟡 DRAFT (Hanya terlihat di Admin)</span>
-              )}
-            </div>
-            <p className="text-[#909296] text-[11px] font-[family-name:var(--font-space-mono)] mt-0.5">
-              Draft tidak akan terlihat oleh publik di halaman katalog.
-            </p>
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Tautan Marketplace Shopee
+            </label>
+            <input
+              type="text"
+              value={shopeeUrl}
+              onChange={(e) => setShopeeUrl(e.target.value)}
+              placeholder="https://shopee.co.id/compaxgrup/..."
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
+            />
           </div>
 
-          <div className="flex items-center gap-2">
-            <label className="text-xs text-[#909296] font-[family-name:var(--font-space-mono)]">
-              Urutan Tampil:
+          <div>
+            <label className="block text-bone-dim text-xs uppercase tracking-wider mb-1">
+              Urutan Tampil (Sort Order)
             </label>
             <input
               type="number"
               value={sortOrder}
-              onChange={(e) => setSortOrder(Number(e.target.value))}
-              className="w-16 px-2 py-1 bg-[#25262B] border border-[#373A40] text-[#F1F3F5] text-xs text-center font-bold font-[family-name:var(--font-space-mono)]"
+              onChange={(e) => setSortOrder(Number(e.target.value) || 1)}
+              placeholder="1"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-[#373A40]">
-          <Link
-            href="/admin/produk"
-            className="px-4 py-2.5 border border-[#373A40] text-[#909296] hover:text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider transition-colors"
-          >
-            ← Batal / Kembali
-          </Link>
-
-          <div className="flex items-center gap-3">
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => {
-                setIsPublished(false);
-                handleSubmit(false);
-              }}
-              className="px-5 py-2.5 border border-[#FFD43B]/60 text-[#FFD43B] hover:bg-[#FFD43B]/10 text-xs font-bold font-[family-name:var(--font-space-mono)] uppercase tracking-wider transition-colors disabled:opacity-50"
-            >
-              {loading ? "Menyimpan..." : "Simpan Sebagai Draft"}
-            </button>
-
-            <button
-              type="button"
-              disabled={loading}
-              onClick={() => {
-                setIsPublished(true);
-                handleSubmit(true);
-              }}
-              className="px-6 py-2.5 bg-[#CDFF00] text-[#1A1B1E] hover:bg-[#b8e600] text-xs font-bold font-[family-name:var(--font-space-mono)] uppercase tracking-wider transition-colors disabled:opacity-50"
-            >
-              {loading ? "Menyimpan..." : "Publikasikan Sekarang"}
-            </button>
-          </div>
-        </div>
+        <InputTag
+          label="Petunjuk Perawatan Apparel"
+          tags={careInstructions}
+          onChange={setCareInstructions}
+          placeholder="Ketik instruksi cuci lalu tekan Enter..."
+        />
       </section>
-    </form>
+
+      {/* Bottom Save Station */}
+      <div className="p-6 bg-forest border border-bone/15 flex flex-wrap items-center justify-between gap-4">
+        <div>
+          <span className="text-xs text-bone-dim block">
+            Status Berkas: <strong className="text-bone">{isPublished ? "SIARAN AKTIF (LIVE)" : "DRAFT TERTUTUP"}</strong>
+          </span>
+          <span className="text-[10px] text-bone-dim/60">
+            Pastikan seluruh data spesifikasi teknis dan gambar telah diverifikasi.
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleSubmit(false)}
+            className="px-5 py-2.5 border border-bone/20 text-bone hover:border-lime hover:text-lime text-xs font-bold uppercase tracking-wider transition-all disabled:opacity-50"
+          >
+            {loading ? "Menyimpan..." : "Simpan Draft"}
+          </button>
+
+          <button
+            type="button"
+            disabled={loading}
+            onClick={() => handleSubmit(true)}
+            className="px-6 py-2.5 bg-lime text-forest-deep text-xs font-bold uppercase tracking-wider hover:bg-lime/90 active:scale-[0.98] transition-all disabled:opacity-50 shadow-[0_4px_16px_rgba(205,255,0,0.2)]"
+          >
+            {loading ? "Menyimpan..." : "Siarkan ke Publik (Live) ↗"}
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }

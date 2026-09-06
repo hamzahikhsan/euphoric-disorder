@@ -33,12 +33,18 @@ export default async function PengaturanPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-[#F1F3F5] text-2xl font-bold font-[family-name:var(--font-nohemi)]">
-          Pengaturan Situs
+      <div className="pb-4 border-b border-bone/10">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="w-1.5 h-1.5 bg-lime inline-block" />
+          <span className="text-[10px] font-mono text-lime uppercase tracking-[0.25em]">
+            SYSTEM CONFIGURATION // KONFIGURASI MARKAS
+          </span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-bone">
+          Pengaturan Situs & Pusat Komunikasi
         </h1>
-        <p className="text-[#909296] text-sm font-[family-name:var(--font-space-mono)] mt-1">
-          Sesuaikan tagline, nomor WhatsApp, alamat workshop, dan tautan sosial media secara real-time.
+        <p className="text-bone-dim text-xs font-mono mt-1">
+          Atur identitas brand, jam operasional hotline WhatsApp, tautan toko Shopee, dan alamat workshop Kemayoran.
         </p>
       </div>
 

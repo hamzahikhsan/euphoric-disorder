@@ -94,78 +94,84 @@ export default function FaqManager({ initialFaqs }: FaqManagerProps) {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Apakah Anda yakin ingin menghapus FAQ ini?")) return;
+    if (!confirm("Apakah Anda yakin ingin menghapus item FAQ ini?")) return;
     setFaqs(faqs.filter((f) => f.id !== id));
     await deleteFaq(id);
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-mono">
       <div className="flex items-center justify-between">
-        <p className="text-xs text-[#909296] font-[family-name:var(--font-space-mono)]">
-          Total FAQ: {faqs.length} pertanyaan
+        <p className="text-xs text-bone-dim">
+          Total Intel FAQ: <strong className="text-lime">{faqs.length}</strong> butir pertanyaan
         </p>
         {!isNew && !editingId && (
           <button
             type="button"
             onClick={startNew}
-            className="px-4 py-2 bg-[#CDFF00] text-[#1A1B1E] text-xs font-bold font-[family-name:var(--font-space-mono)] uppercase hover:bg-[#b8e600] transition-colors"
+            className="px-4 py-2 bg-lime text-forest-deep text-xs font-bold uppercase hover:bg-lime/90 transition-all flex items-center gap-1.5 shadow-sm"
           >
-            + Tambah FAQ
+            <span>+</span>
+            <span>Tambah Intel FAQ</span>
           </button>
         )}
       </div>
 
-      {/* Editor Box */}
+      {/* FAQ Editor Form */}
       {(isNew || editingId) && (
-        <div className="bg-[#25262B] border border-[#CDFF00]/50 p-6 space-y-4">
-          <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)]">
-            {isNew ? "Tambah FAQ Baru" : "Edit FAQ"}
-          </h2>
+        <div className="bg-forest border border-lime/40 p-6 sm:p-8 space-y-5 shadow-lg">
+          <div className="flex items-center justify-between border-b border-bone/10 pb-3">
+            <h2 className="text-bone text-base font-bold font-display">
+              {isNew ? "Daftarkan Pertanyaan FAQ Baru" : "Modifikasi Intel FAQ"}
+            </h2>
+            <span className="text-lime text-[10px] uppercase">
+              {isNew ? "[ENTRY BARU]" : `[ID: ${editingId}]`}
+            </span>
+          </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase mb-1">
-              Pertanyaan
+            <label className="block text-bone-dim text-xs uppercase mb-1">
+              Pertanyaan (Judul Kasus) *
             </label>
             <input
               type="text"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
-              placeholder="Contoh: Bagaimana cara memesan produk edisi Pre-Order (PO)?"
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              placeholder="Contoh: Bagaimana prosedur kustom sablon apparel satuan atau batch?"
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase mb-1">
-              Jawaban Lengkap
+            <label className="block text-bone-dim text-xs uppercase mb-1">
+              Jawaban Penjelasan Forensik *
             </label>
             <textarea
-              rows={3}
+              rows={4}
               value={answer}
               onChange={(e) => setAnswer(e.target.value)}
-              placeholder="Tuliskan jawaban yang ramah dan informatif..."
-              className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none leading-relaxed"
+              placeholder="Tuliskan jawaban yang detail, lugas, dan mengarahkan ke kanal pemesanan resmi..."
+              className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none leading-relaxed"
             />
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="text-xs text-[#909296] font-[family-name:var(--font-space-mono)]">
-              Urutan Tampil:
+            <label className="text-xs text-bone-dim uppercase">
+              Urutan Tampil (Sort Order):
             </label>
             <input
               type="number"
               value={sortOrder}
               onChange={(e) => setSortOrder(Number(e.target.value))}
-              className="w-16 px-2 py-1 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs text-center font-[family-name:var(--font-space-mono)]"
+              className="w-20 px-3 py-1.5 bg-forest-deep border border-bone/20 text-lime text-xs text-center font-bold"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-bone/10">
             <button
               type="button"
               onClick={cancelEdit}
-              className="px-4 py-2 border border-[#373A40] text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase"
+              className="px-4 py-2 border border-bone/20 text-bone-dim hover:text-bone text-xs uppercase"
             >
               Batal
             </button>
@@ -173,60 +179,60 @@ export default function FaqManager({ initialFaqs }: FaqManagerProps) {
               type="button"
               disabled={loading}
               onClick={handleSave}
-              className="px-5 py-2 bg-[#CDFF00] text-[#1A1B1E] text-xs font-bold font-[family-name:var(--font-space-mono)] uppercase hover:bg-[#b8e600]"
+              className="px-5 py-2 bg-lime text-forest-deep text-xs font-bold uppercase hover:bg-lime/90 transition-colors shadow-sm"
             >
-              {loading ? "Menyimpan..." : "Simpan FAQ"}
+              {loading ? "Menyimpan..." : "Simpan Intel FAQ"}
             </button>
           </div>
         </div>
       )}
 
-      {/* FAQ List */}
+      {/* FAQ Items Accordion Cards */}
       <div className="space-y-3">
         {faqs.length === 0 ? (
-          <div className="p-8 bg-[#25262B] border border-[#373A40] text-center text-[#555] text-sm font-[family-name:var(--font-space-mono)]">
-            Belum ada data FAQ.
+          <div className="p-12 bg-forest border border-bone/10 text-center text-bone-dim text-xs">
+            Belum ada butir FAQ yang tersimpan.
           </div>
         ) : (
           faqs.map((item, idx) => (
             <div
               key={item.id}
-              className={`p-4 bg-[#25262B] border transition-all ${
-                item.is_visible ? "border-[#373A40]" : "border-[#373A40] opacity-50"
+              className={`p-5 bg-forest border transition-all ${
+                item.is_visible ? "border-bone/15" : "border-bone/10 opacity-50 bg-forest-deep/40"
               }`}
             >
               <div className="flex items-start justify-between gap-4">
-                <div className="space-y-1.5 flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-[#CDFF00] font-bold font-[family-name:var(--font-space-mono)]">
-                      #{idx + 1}
+                <div className="space-y-2 flex-1">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-[11px] text-lime font-bold">
+                      #{String(idx + 1).padStart(2, "0")}
                     </span>
-                    <h3 className="text-sm font-bold text-[#F1F3F5] font-[family-name:var(--font-nohemi)]">
+                    <h3 className="text-sm sm:text-base font-bold text-bone font-display tracking-tight">
                       {item.question}
                     </h3>
                   </div>
-                  <p className="text-xs text-[#909296] font-[family-name:var(--font-space-mono)] leading-relaxed">
+                  <p className="text-xs text-bone-dim leading-relaxed pl-6">
                     {item.answer}
                   </p>
                 </div>
 
-                <div className="flex items-center gap-2 flex-shrink-0">
+                <div className="flex items-center gap-2 flex-shrink-0 pt-0.5">
                   <button
                     type="button"
                     onClick={() => handleToggle(item.id, item.is_visible)}
-                    className={`px-2 py-1 text-[10px] font-bold uppercase font-[family-name:var(--font-space-mono)] ${
+                    className={`px-2.5 py-1 text-[10px] font-bold uppercase border transition-all ${
                       item.is_visible
-                        ? "bg-[#51CF66]/20 text-[#51CF66] border border-[#51CF66]/40"
-                        : "bg-[#868E96]/20 text-[#868E96] border border-[#868E96]/40"
+                        ? "bg-emerald-950/20 text-emerald-400 border-emerald-500/40"
+                        : "bg-forest-deep text-bone-dim/60 border-bone/10"
                     }`}
                   >
-                    {item.is_visible ? "Tampil" : "Hidden"}
+                    {item.is_visible ? "TAYANG" : "DISEMBUNYIKAN"}
                   </button>
 
                   <button
                     type="button"
                     onClick={() => startEdit(item)}
-                    className="px-2 py-1 text-[10px] bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] hover:border-[#CDFF00] font-[family-name:var(--font-space-mono)]"
+                    className="px-3 py-1 text-[11px] bg-forest-deep border border-bone/20 text-bone hover:border-lime hover:text-lime uppercase transition-colors"
                   >
                     Edit
                   </button>
@@ -234,9 +240,10 @@ export default function FaqManager({ initialFaqs }: FaqManagerProps) {
                   <button
                     type="button"
                     onClick={() => handleDelete(item.id)}
-                    className="px-2 py-1 text-[10px] border border-[#FF6B6B]/30 text-[#FF6B6B] hover:bg-[#FF6B6B]/15 font-[family-name:var(--font-space-mono)]"
+                    className="px-2.5 py-1 text-[11px] border border-red-500/30 text-red-400 hover:bg-red-950/20 uppercase transition-colors"
+                    title="Hapus FAQ"
                   >
-                    Hapus
+                    ✕
                   </button>
                 </div>
               </div>

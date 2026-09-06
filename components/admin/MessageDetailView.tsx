@@ -46,7 +46,7 @@ export default function MessageDetailView({ message: initialMsg }: MessageDetail
   };
 
   const handleDelete = async () => {
-    if (!confirm("Hapus pesan ini secara permanen?")) return;
+    if (!confirm("Hapus berkas transmisi ini secara permanen?")) return;
     const res = await deleteMessage(message.id);
     if (res.ok) {
       router.push("/admin/pesan");
@@ -57,53 +57,58 @@ export default function MessageDetailView({ message: initialMsg }: MessageDetail
   const isPhone = /^\+?[0-9\s-]{8,15}$/.test(message.contact.trim());
   const waUrl = isPhone
     ? `https://wa.me/${cleanWhatsAppNumber(message.contact)}?text=${encodeURIComponent(
-        `Halo ${message.name}, menindaklanjuti pesan Anda ke Euphoric Disorder terkait "${message.subject || "Pertanyaan Anda"}":`
+        `Halo ${message.name}, menindaklanjuti pesan Anda ke Markas euphoric.disorder terkait "${message.subject || "Inquiry Anda"}":\n\n`
       )}`
     : null;
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6 max-w-4xl font-mono">
+      {/* Top action bar */}
       <div className="flex items-center justify-between">
         <Link
           href="/admin/pesan"
-          className="text-xs text-[#909296] hover:text-[#CDFF00] font-[family-name:var(--font-space-mono)] uppercase tracking-wider"
+          className="text-xs text-bone-dim hover:text-lime uppercase tracking-wider transition-colors flex items-center gap-1.5"
         >
-          ← Kembali ke Kotak Masuk
+          <span>←</span>
+          <span>Kembali ke Kotak Masuk</span>
         </Link>
 
         <button
           type="button"
           onClick={handleDelete}
-          className="px-3 py-1.5 border border-[#FF6B6B]/40 text-[#FF6B6B] hover:bg-[#FF6B6B]/15 text-xs font-[family-name:var(--font-space-mono)] uppercase transition-colors"
+          className="px-3 py-1.5 border border-red-500/40 text-red-400 hover:bg-red-950/20 text-xs uppercase tracking-wider transition-colors"
         >
-          🗑️ Hapus Pesan
+          Hapus Transmisi
         </button>
       </div>
 
-      {/* Main card */}
-      <div className="bg-[#25262B] border border-[#373A40] p-6 space-y-6">
-        {/* Header */}
-        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#373A40] pb-4">
+      {/* Main Dossier Card */}
+      <div className="bg-forest border border-bone/15 p-6 sm:p-8 space-y-6">
+        {/* Header section */}
+        <div className="flex flex-wrap items-start justify-between gap-4 border-b border-bone/10 pb-5">
           <div>
-            <span className="text-[10px] text-[#CDFF00] font-[family-name:var(--font-space-mono)] uppercase tracking-widest">
-              BERKAS LAPORAN KASUS
-            </span>
-            <h1 className="text-xl font-bold text-[#F1F3F5] font-[family-name:var(--font-nohemi)] mt-0.5">
+            <div className="flex items-center gap-2 mb-1.5">
+              <span className="w-1.5 h-1.5 bg-lime inline-block" />
+              <span className="text-[10px] text-lime uppercase tracking-widest">
+                TRANSMISSION DOSSIER // BERKAS INQUIRY
+              </span>
+            </div>
+            <h1 className="text-2xl font-bold text-bone font-display tracking-tight">
               {message.name}
             </h1>
-            <p className="text-xs text-[#909296] font-[family-name:var(--font-space-mono)] mt-1">
-              Kontak: <strong className="text-[#F1F3F5]">{message.contact}</strong> · Sumber: {message.source}
+            <p className="text-xs text-bone-dim mt-1">
+              Kontak: <strong className="text-lime">{message.contact}</strong> • Sumber: <span className="text-bone">{message.source}</span>
             </p>
           </div>
 
           <div className="flex items-center gap-3">
-            <label className="text-xs text-[#909296] font-[family-name:var(--font-space-mono)]">
-              Status:
+            <label className="text-xs text-bone-dim uppercase">
+              Status Berkas:
             </label>
             <select
               value={message.status}
               onChange={(e) => handleStatusChange(e.target.value as MessageRow["status"])}
-              className="px-3 py-1.5 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-bold uppercase focus:border-[#CDFF00] focus:outline-none"
+              className="px-3 py-1.5 bg-forest-deep border border-bone/20 text-bone text-xs font-bold uppercase focus:border-lime focus:outline-none"
             >
               <option value="unread">Belum Dibaca</option>
               <option value="read">Dibaca</option>
@@ -113,30 +118,32 @@ export default function MessageDetailView({ message: initialMsg }: MessageDetail
           </div>
         </div>
 
-        {/* Message body */}
-        <div className="space-y-2">
+        {/* Message body content */}
+        <div className="space-y-3">
           {message.subject && (
-            <div className="text-xs text-[#CDFF00] font-bold font-[family-name:var(--font-space-mono)]">
+            <div className="text-sm text-lime font-bold">
               Subjek: {message.subject}
             </div>
           )}
-          <div className="p-4 bg-[#1A1B1E] border border-[#373A40] text-sm text-[#F1F3F5] font-[family-name:var(--font-space-mono)] leading-relaxed whitespace-pre-wrap">
+
+          <div className="p-5 bg-forest-deep border border-bone/15 text-sm text-bone leading-relaxed whitespace-pre-wrap">
             {message.message}
           </div>
-          <p className="text-[11px] text-[#555] font-[family-name:var(--font-space-mono)]">
-            Diterima pada: {new Date(message.created_at).toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })} WIB
+
+          <p className="text-[11px] text-bone-dim/60">
+            Diterima pada sistem: {new Date(message.created_at).toLocaleString("id-ID", { timeZone: "Asia/Jakarta" })} WIB
           </p>
         </div>
 
-        {/* Quick action: WhatsApp */}
+        {/* Direct WhatsApp Response Dispatch Station */}
         {waUrl && (
-          <div className="p-4 bg-[#51CF66]/10 border border-[#51CF66]/30 flex flex-wrap items-center justify-between gap-3">
+          <div className="p-5 bg-forest-deep border border-emerald-500/30 flex flex-wrap items-center justify-between gap-4">
             <div>
-              <p className="text-xs font-bold text-[#51CF66] font-[family-name:var(--font-nohemi)]">
-                Balas Langsung via WhatsApp
+              <p className="text-sm font-bold text-emerald-400 font-display">
+                Disposisi Cepat ke WhatsApp
               </p>
-              <p className="text-[11px] text-[#909296] font-[family-name:var(--font-space-mono)]">
-                Nomor pelanggan terdeteksi: {message.contact}
+              <p className="text-xs text-bone-dim mt-0.5">
+                Nomor kontak pemesan terverifikasi: <strong className="text-bone">{message.contact}</strong>
               </p>
             </div>
             <a
@@ -144,22 +151,23 @@ export default function MessageDetailView({ message: initialMsg }: MessageDetail
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => handleStatusChange("responded")}
-              className="px-4 py-2 bg-[#51CF66] text-[#1A1B1E] text-xs font-bold uppercase font-[family-name:var(--font-space-mono)] hover:bg-[#40c057] transition-colors"
+              className="px-5 py-2.5 bg-emerald-500 text-forest-deep text-xs font-bold uppercase hover:bg-emerald-400 transition-colors shadow-md flex items-center gap-2"
             >
-              💬 Buka WhatsApp & Balas
+              <span>Disposisi & Balas WhatsApp</span>
+              <span>↗</span>
             </a>
           </div>
         )}
 
-        {/* Admin Notes */}
-        <div className="space-y-3 pt-2 border-t border-[#373A40]">
+        {/* Internal Admin Case Notes */}
+        <div className="space-y-3 pt-4 border-t border-bone/10">
           <div className="flex items-center justify-between">
-            <label className="text-xs text-[#909296] font-[family-name:var(--font-space-mono)] uppercase tracking-wider">
-              Catatan Internal Admin
+            <label className="text-xs text-bone-dim uppercase tracking-wider">
+              Catatan Internal Investigasi Markas
             </label>
             {notesSuccess && (
-              <span className="text-[11px] text-[#51CF66] font-[family-name:var(--font-space-mono)]">
-                ✓ Tersimpan!
+              <span className="text-[11px] text-lime">
+                ✓ Catatan berhasil disimpan ke basis data!
               </span>
             )}
           </div>
@@ -167,17 +175,17 @@ export default function MessageDetailView({ message: initialMsg }: MessageDetail
             rows={3}
             value={adminNotes}
             onChange={(e) => setAdminNotes(e.target.value)}
-            placeholder="Tuliskan catatan tindak lanjut pesanan atau riwayat komunikasi pelanggan di sini..."
-            className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none leading-relaxed"
+            placeholder="Tuliskan catatan tindak lanjut pesanan, riwayat konfirmasi ukuran, atau instruksi khusus..."
+            className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none leading-relaxed"
           />
           <div className="flex justify-end">
             <button
               type="button"
               disabled={savingNotes}
               onClick={handleSaveNotes}
-              className="px-4 py-1.5 bg-[#25262B] border border-[#373A40] text-[#CDFF00] hover:border-[#CDFF00] text-xs font-[family-name:var(--font-space-mono)] uppercase transition-colors"
+              className="px-4 py-2 bg-forest border border-lime/40 text-lime hover:bg-lime hover:text-forest-deep font-bold text-xs uppercase tracking-wider transition-all disabled:opacity-50"
             >
-              {savingNotes ? "Menyimpan..." : "Simpan Catatan"}
+              {savingNotes ? "Menyimpan..." : "Simpan Catatan Internal"}
             </button>
           </div>
         </div>

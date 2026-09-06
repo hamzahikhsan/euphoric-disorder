@@ -90,16 +90,22 @@ export default function MediaLibrary() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Upload card */}
-      <div className="bg-[#25262B] border border-[#373A40] p-6">
+    <div className="space-y-6 font-mono">
+      {/* Upload Command Card */}
+      <div className="bg-forest border border-bone/15 p-6 sm:p-8">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-[#F1F3F5] text-base font-bold font-[family-name:var(--font-nohemi)]">
-              Unggah Media Baru
+            <div className="flex items-center gap-2 mb-1">
+              <span className="w-1.5 h-1.5 bg-lime inline-block" />
+              <span className="text-[10px] text-lime uppercase tracking-wider">
+                AUTO-COMPRESSION WEBP ENGINE
+              </span>
+            </div>
+            <h2 className="text-bone text-lg font-bold font-display tracking-tight">
+              Unggah Aset Media Bukti Baru
             </h2>
-            <p className="text-[#909296] text-xs font-[family-name:var(--font-space-mono)] mt-1">
-              Gambar akan otomatis dikompres ke format WebP sebelum diunggah ke CDN.
+            <p className="text-bone-dim text-xs mt-1">
+              Foto otomatis dikonversi ke WebP &lt; 1MB secara client-side sebelum diarsipkan ke CDN Supabase.
             </p>
           </div>
 
@@ -107,14 +113,14 @@ export default function MediaLibrary() {
             <select
               value={selectedBucket}
               onChange={(e) => setSelectedBucket(e.target.value)}
-              className="px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
+              className="px-3.5 py-2 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
             >
-              <option value="product-images">product-images (5MB)</option>
-              <option value="site-assets">site-assets (10MB)</option>
+              <option value="product-images">product-images (Bucket)</option>
+              <option value="site-assets">site-assets (Bucket)</option>
             </select>
 
-            <label className="px-5 py-2.5 bg-[#CDFF00] text-[#1A1B1E] text-xs font-bold font-[family-name:var(--font-space-mono)] uppercase tracking-wider cursor-pointer hover:bg-[#b8e600] transition-colors">
-              <span>{uploading ? "Mengompres & Upload..." : "📁 Pilih Gambar"}</span>
+            <label className="px-5 py-2.5 bg-lime text-forest-deep text-xs font-bold uppercase tracking-wider cursor-pointer hover:bg-lime/90 active:scale-[0.98] transition-all flex items-center gap-2 shadow-sm">
+              <span>{uploading ? "Mengompres & Upload..." : "+ Unggah Gambar"}</span>
               <input
                 type="file"
                 multiple
@@ -128,15 +134,21 @@ export default function MediaLibrary() {
         </div>
       </div>
 
-      {/* Grid */}
+      {/* Media Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {items.map((item, idx) => (
           <div
             key={idx}
-            className="bg-[#25262B] border border-[#373A40] p-3 flex flex-col justify-between group hover:border-[#CDFF00] transition-colors"
+            className="bg-forest border border-bone/15 p-3 flex flex-col justify-between group hover:border-lime/50 transition-colors relative"
           >
-            {/* Thumbnail */}
-            <div className="relative w-full aspect-square bg-[#1A1B1E] border border-[#373A40] overflow-hidden mb-3">
+            {/* Thumbnail with ruler scale markings */}
+            <div className="relative w-full aspect-square bg-forest-deep border border-bone/10 overflow-hidden mb-3">
+              <div className="absolute top-0 left-0 bottom-0 w-1 bg-lime/20 z-10 pointer-events-none flex flex-col justify-between py-1">
+                <span className="w-full h-px bg-forest-deep" />
+                <span className="w-full h-px bg-forest-deep" />
+                <span className="w-full h-px bg-forest-deep" />
+              </div>
+
               <Image
                 src={item.url}
                 alt={item.name}
@@ -149,13 +161,13 @@ export default function MediaLibrary() {
             {/* Info */}
             <div className="space-y-1 mb-3">
               <div
-                className="text-[#F1F3F5] text-xs font-bold font-[family-name:var(--font-space-mono)] truncate"
+                className="text-bone text-xs font-bold truncate group-hover:text-lime transition-colors"
                 title={item.name}
               >
                 {item.name}
               </div>
-              <div className="flex items-center justify-between text-[10px] text-[#909296] font-[family-name:var(--font-space-mono)]">
-                <span>{item.type}</span>
+              <div className="flex items-center justify-between text-[10px] text-bone-dim/70">
+                <span className="truncate max-w-[80px]">{item.type}</span>
                 <span>{item.size}</span>
               </div>
             </div>
@@ -164,9 +176,13 @@ export default function MediaLibrary() {
             <button
               type="button"
               onClick={() => copyToClipboard(item.url)}
-              className="w-full py-1.5 px-2 bg-[#1A1B1E] border border-[#373A40] hover:border-[#CDFF00] text-[#CDFF00] text-[10px] font-bold font-[family-name:var(--font-space-mono)] uppercase tracking-wider transition-colors"
+              className={`w-full py-1.5 px-2 border text-[10px] font-bold uppercase tracking-wider transition-all ${
+                copiedUrl === item.url
+                  ? "bg-lime text-forest-deep border-lime"
+                  : "bg-forest-deep border-bone/20 text-bone-dim hover:text-lime hover:border-lime"
+              }`}
             >
-              {copiedUrl === item.url ? "✓ Tersalin!" : "Salin URL"}
+              {copiedUrl === item.url ? "✓ URL Tersalin!" : "Salin URL Bukti"}
             </button>
           </div>
         ))}

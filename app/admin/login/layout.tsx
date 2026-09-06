@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Panel Admin — euphoric.disorder",
+  title: "Akses Markas Besar — euphoric.disorder",
   robots: { index: false, follow: false },
 };
 
 /**
- * Layout khusus admin login — tanpa sidebar/topbar.
- * Menggunakan layout terpisah dari shell admin utama.
+ * Layout khusus admin login — mandiri tanpa sidebar/topbar.
+ * Enforces data-surface="dark" dengan background forest-deep.
  */
 export default function AdminLoginLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <div data-surface="dark" className="min-h-screen bg-forest-deep text-bone font-body selection:bg-lime selection:text-forest-deep">
+      {children}
+    </div>
+  );
 }

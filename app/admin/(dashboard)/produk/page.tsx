@@ -57,22 +57,29 @@ export default async function ProdukPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* Header Banner */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-6 border-b border-bone/10">
         <div>
-          <h1 className="text-[#F1F3F5] text-2xl font-bold font-[family-name:var(--font-nohemi)]">
-            Daftar Produk
+          <div className="flex items-center gap-2 mb-1.5">
+            <span className="w-1.5 h-1.5 bg-lime inline-block" />
+            <span className="text-[10px] font-mono text-lime uppercase tracking-[0.25em]">
+              EVIDENCE LOCKER // KATALOG BUKTI APPAREL
+            </span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-bone">
+            Daftar Bukti Produk
           </h1>
-          <p className="text-[#909296] text-sm font-[family-name:var(--font-space-mono)] mt-1">
-            Kelola katalog berkas perkara, harga, stok, dan kontrol publikasi.
+          <p className="text-bone-dim text-xs font-mono mt-1">
+            Kelola arsip berkas perkara artikel, spesifikasi bahan, matriks ukuran, dan publikasi toko.
           </p>
         </div>
 
         <Link
           href="/admin/produk/baru"
-          className="px-5 py-2.5 bg-[#CDFF00] text-[#1A1B1E] text-xs font-bold font-[family-name:var(--font-space-mono)] uppercase tracking-wider hover:bg-[#b8e600] transition-colors"
+          className="px-5 py-2.5 bg-lime text-forest-deep text-xs font-bold font-mono uppercase tracking-wider hover:bg-lime/90 active:scale-[0.98] transition-all flex items-center gap-2 shadow-[0_2px_12px_rgba(205,255,0,0.15)] flex-shrink-0"
         >
-          ➕ Tambah Produk Baru
+          <span className="text-sm leading-none">+</span>
+          <span>Daftarkan Bukti Baru</span>
         </Link>
       </div>
 

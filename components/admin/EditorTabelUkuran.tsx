@@ -54,96 +54,101 @@ export default function EditorTabelUkuran({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 font-mono">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider">
-          Panduan Ukuran (Size Chart cm)
-        </label>
+        <div>
+          <label className="block text-bone-dim text-xs uppercase tracking-wider">
+            Matriks Spesifikasi Ukuran (Size Chart cm)
+          </label>
+          <span className="text-[10px] text-bone-dim/60">
+            Panduan dimensi fisik apparel untuk referensi fitting pembeli.
+          </span>
+        </div>
         <div className="flex items-center gap-2">
-          <span className="text-[10px] text-[#555] font-[family-name:var(--font-space-mono)]">
+          <span className="text-[10px] text-bone-dim/60 uppercase">
             Preset:
           </span>
           <button
             type="button"
             onClick={() => applyPreset(TSHIRT_PRESET)}
-            className="px-2 py-0.5 text-[10px] bg-[#1A1B1E] border border-[#373A40] text-[#909296] hover:text-[#CDFF00] hover:border-[#CDFF00] transition-colors font-[family-name:var(--font-space-mono)]"
+            className="px-2.5 py-1 text-[10px] bg-forest-deep border border-bone/20 text-bone-dim hover:text-lime hover:border-lime transition-colors"
           >
-            Kaos Boxy
+            Kaos Boxy (S-XXL)
           </button>
           <button
             type="button"
             onClick={() => applyPreset(HOODIE_PRESET)}
-            className="px-2 py-0.5 text-[10px] bg-[#1A1B1E] border border-[#373A40] text-[#909296] hover:text-[#CDFF00] hover:border-[#CDFF00] transition-colors font-[family-name:var(--font-space-mono)]"
+            className="px-2.5 py-1 text-[10px] bg-forest-deep border border-bone/20 text-bone-dim hover:text-lime hover:border-lime transition-colors"
           >
-            Hoodie Fleece
+            Hoodie Boxy (S-XXL)
           </button>
           <button
             type="button"
             onClick={addRow}
-            className="px-2 py-0.5 text-[10px] bg-[#25262B] border border-[#373A40] text-[#CDFF00] font-[family-name:var(--font-space-mono)] hover:border-[#CDFF00] transition-colors"
+            className="px-2.5 py-1 text-[10px] bg-forest border border-lime/40 text-lime hover:bg-lime hover:text-forest-deep font-bold transition-all"
           >
-            + Baris
+            + Tambah Baris
           </button>
         </div>
       </div>
 
       {sizeChart.length === 0 ? (
-        <div className="p-4 bg-[#1A1B1E] border border-dashed border-[#373A40] text-center text-xs text-[#555] font-[family-name:var(--font-space-mono)]">
-          Ukuran belum diatur. Gunakan tombol preset di atas atau tambah baris baru.
+        <div className="p-6 bg-forest-deep border border-dashed border-bone/20 text-center text-xs text-bone-dim/60">
+          Matriks ukuran belum diatur. Gunakan tombol preset di atas untuk konfigurasi instan.
         </div>
       ) : (
-        <div className="overflow-x-auto border border-[#373A40]">
-          <table className="w-full text-left text-xs font-[family-name:var(--font-space-mono)]">
-            <thead className="bg-[#1A1B1E] text-[#909296] border-b border-[#373A40] uppercase text-[10px]">
+        <div className="overflow-x-auto border border-bone/15">
+          <table className="w-full text-left text-xs">
+            <thead className="bg-forest-deep text-bone-dim border-b border-bone/15 uppercase text-[10px] tracking-wider">
               <tr>
-                <th className="py-2 px-3">Size</th>
-                <th className="py-2 px-3">Lebar Dada (cm)</th>
-                <th className="py-2 px-3">Panjang (cm)</th>
-                <th className="py-2 px-3">Lengan (cm)</th>
-                <th className="py-2 px-2 text-center w-10">Aksi</th>
+                <th className="py-2.5 px-3">Size Tag</th>
+                <th className="py-2.5 px-3">Lebar Dada (cm)</th>
+                <th className="py-2.5 px-3">Panjang Badan (cm)</th>
+                <th className="py-2.5 px-3">Panjang Lengan (cm)</th>
+                <th className="py-2.5 px-2 text-center w-10">Aksi</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#373A40] bg-[#25262B]">
+            <tbody className="divide-y divide-bone/10 bg-forest">
               {sizeChart.map((row, idx) => (
-                <tr key={idx} className="hover:bg-[#2C2E33]/50">
-                  <td className="py-1.5 px-3">
+                <tr key={idx} className="hover:bg-forest-deep/60 transition-colors">
+                  <td className="py-2 px-3">
                     <input
                       type="text"
                       value={row.size}
                       onChange={(e) => updateRow(idx, "size", e.target.value)}
-                      className="w-16 px-2 py-1 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-bold text-center focus:border-[#CDFF00] focus:outline-none"
+                      className="w-16 px-2 py-1 bg-forest-deep border border-bone/20 text-lime text-xs font-bold text-center focus:border-lime focus:outline-none"
                     />
                   </td>
-                  <td className="py-1.5 px-3">
+                  <td className="py-2 px-3">
                     <input
                       type="number"
                       value={row.chest}
                       onChange={(e) => updateRow(idx, "chest", e.target.value)}
-                      className="w-20 px-2 py-1 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs focus:border-[#CDFF00] focus:outline-none"
+                      className="w-20 px-2 py-1 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
                     />
                   </td>
-                  <td className="py-1.5 px-3">
+                  <td className="py-2 px-3">
                     <input
                       type="number"
                       value={row.length}
                       onChange={(e) => updateRow(idx, "length", e.target.value)}
-                      className="w-20 px-2 py-1 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs focus:border-[#CDFF00] focus:outline-none"
+                      className="w-20 px-2 py-1 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
                     />
                   </td>
-                  <td className="py-1.5 px-3">
+                  <td className="py-2 px-3">
                     <input
                       type="number"
                       value={row.sleeve}
                       onChange={(e) => updateRow(idx, "sleeve", e.target.value)}
-                      className="w-20 px-2 py-1 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs focus:border-[#CDFF00] focus:outline-none"
+                      className="w-20 px-2 py-1 bg-forest-deep border border-bone/20 text-bone text-xs focus:border-lime focus:outline-none"
                     />
                   </td>
-                  <td className="py-1.5 px-2 text-center">
+                  <td className="py-2 px-2 text-center">
                     <button
                       type="button"
                       onClick={() => removeRow(idx)}
-                      className="text-[#909296] hover:text-[#FF6B6B] transition-colors text-xs"
-                      title="Hapus baris"
+                      className="text-bone-dim hover:text-red-400 transition-colors text-xs p-1"
+                      title="Hapus baris ukuran"
                     >
                       ✕
                     </button>

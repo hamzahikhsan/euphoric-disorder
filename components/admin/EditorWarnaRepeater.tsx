@@ -15,7 +15,7 @@ export default function EditorWarnaRepeater({
   onChange,
 }: EditorWarnaRepeaterProps) {
   const addColor = () => {
-    onChange([...colors, { name: "Warna Baru", hex: "#121212" }]);
+    onChange([...colors, { name: "Dark Olive Green", hex: "#2C3221" }]);
   };
 
   const updateColor = (index: number, field: keyof ColorItem, value: string) => {
@@ -29,38 +29,46 @@ export default function EditorWarnaRepeater({
   };
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 font-mono">
       <div className="flex items-center justify-between">
-        <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider">
-          Variasi Warna Produk
-        </label>
+        <div>
+          <label className="block text-bone-dim text-xs uppercase tracking-wider">
+            Palet Warna & Swatch Barang Bukti
+          </label>
+          <span className="text-[10px] text-bone-dim/60">
+            Daftar opsi warna kain yang dapat dipilih pembeli di halaman produk.
+          </span>
+        </div>
         <button
           type="button"
           onClick={addColor}
-          className="px-2.5 py-1 text-[11px] bg-[#25262B] border border-[#373A40] text-[#CDFF00] font-[family-name:var(--font-space-mono)] uppercase hover:border-[#CDFF00] transition-colors"
+          className="px-3 py-1.5 text-xs bg-forest border border-lime/40 text-lime uppercase hover:bg-lime hover:text-forest-deep font-bold transition-all"
         >
           + Tambah Warna
         </button>
       </div>
 
       {colors.length === 0 ? (
-        <div className="p-4 bg-[#1A1B1E] border border-dashed border-[#373A40] text-center text-xs text-[#555] font-[family-name:var(--font-space-mono)]">
-          Belum ada variasi warna. Klik &quot;+ Tambah Warna&quot; untuk menambahkan.
+        <div className="p-6 bg-forest-deep border border-dashed border-bone/20 text-center text-xs text-bone-dim/60">
+          Belum ada palet warna yang didaftarkan. Klik &quot;+ Tambah Warna&quot; untuk memulai.
         </div>
       ) : (
         <div className="space-y-2">
           {colors.map((c, idx) => (
             <div
               key={idx}
-              className="flex items-center gap-2 p-2 bg-[#1A1B1E] border border-[#373A40]"
+              className="flex items-center gap-3 p-3 bg-forest-deep border border-bone/20 hover:border-lime/30 transition-colors"
             >
-              {/* Color picker swatch */}
-              <div className="relative w-8 h-8 flex-shrink-0 border border-[#373A40] overflow-hidden">
+              {/* Color picker circle */}
+              <div
+                className="relative w-8 h-8 rounded-none flex-shrink-0 border border-bone/30 overflow-hidden shadow-sm"
+                style={{ backgroundColor: c.hex }}
+              >
                 <input
                   type="color"
                   value={c.hex}
                   onChange={(e) => updateColor(idx, "hex", e.target.value)}
-                  className="absolute inset-[-8px] w-[200%] h-[200%] cursor-pointer border-0"
+                  className="absolute inset-[-8px] w-[200%] h-[200%] cursor-pointer opacity-0"
                 />
               </div>
 
@@ -71,7 +79,7 @@ export default function EditorWarnaRepeater({
                 onChange={(e) => updateColor(idx, "hex", e.target.value)}
                 placeholder="#000000"
                 maxLength={7}
-                className="w-24 px-2 py-1.5 bg-[#25262B] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] uppercase focus:outline-none focus:border-[#CDFF00]"
+                className="w-24 px-2.5 py-1.5 bg-forest border border-bone/20 text-lime text-xs font-mono uppercase focus:outline-none focus:border-lime"
               />
 
               {/* Name input */}
@@ -79,16 +87,16 @@ export default function EditorWarnaRepeater({
                 type="text"
                 value={c.name}
                 onChange={(e) => updateColor(idx, "name", e.target.value)}
-                placeholder="Nama warna (contoh: Deep Pitch Black)"
-                className="flex-1 px-3 py-1.5 bg-[#25262B] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:outline-none focus:border-[#CDFF00]"
+                placeholder="Nama Varian (Contoh: Vintage Washed Black)"
+                className="flex-1 px-3 py-1.5 bg-forest border border-bone/20 text-bone text-xs font-mono focus:outline-none focus:border-lime"
               />
 
               {/* Remove button */}
               <button
                 type="button"
                 onClick={() => removeColor(idx)}
-                className="px-2 py-1 text-xs text-[#909296] hover:text-[#FF6B6B] transition-colors"
-                title="Hapus varian warna"
+                className="px-2 py-1 text-xs text-bone-dim hover:text-red-400 transition-colors"
+                title="Hapus variasi warna"
               >
                 ✕
               </button>

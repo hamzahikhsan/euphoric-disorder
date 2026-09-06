@@ -37,22 +37,22 @@ export default function InputTag({
   };
 
   return (
-    <div className="space-y-1.5">
-      <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider">
+    <div className="space-y-1.5 font-mono">
+      <label className="block text-bone-dim text-xs uppercase tracking-wider">
         {label}
       </label>
 
-      <div className="min-h-[44px] p-2 bg-[#1A1B1E] border border-[#373A40] focus-within:border-[#CDFF00] flex flex-wrap gap-1.5 items-center transition-colors">
+      <div className="min-h-[44px] p-2 bg-forest-deep border border-bone/20 focus-within:border-lime focus-within:ring-1 focus-within:ring-lime flex flex-wrap gap-2 items-center transition-colors">
         {tags.map((tag, idx) => (
           <span
             key={idx}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-[#25262B] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)]"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-forest border border-bone/20 text-lime text-xs font-mono group"
           >
-            {tag}
+            <span>{tag}</span>
             <button
               type="button"
               onClick={() => removeTag(idx)}
-              className="text-[#909296] hover:text-[#FF6B6B] text-xs leading-none"
+              className="text-bone-dim hover:text-red-400 text-sm leading-none transition-colors"
               title="Hapus tag"
             >
               ×
@@ -65,13 +65,13 @@ export default function InputTag({
           value={inputVal}
           onChange={(e) => setInputVal(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={tags.length === 0 ? placeholder : ""}
-          className="flex-1 min-w-[140px] bg-transparent border-none text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] placeholder:text-[#555] focus:outline-none"
+          placeholder={tags.length === 0 ? placeholder : "Tambah lagi..."}
+          className="flex-1 min-w-[140px] bg-transparent border-none text-bone text-xs font-mono placeholder:text-bone-dim/40 focus:outline-none"
         />
       </div>
 
       {helperText && (
-        <p className="text-[10px] text-[#555] font-[family-name:var(--font-space-mono)]">
+        <p className="text-[10px] text-bone-dim/60">
           {helperText}
         </p>
       )}

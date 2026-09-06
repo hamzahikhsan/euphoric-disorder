@@ -26,12 +26,18 @@ export default async function AktivitasPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-[#F1F3F5] text-2xl font-bold font-[family-name:var(--font-nohemi)]">
-          Log Aktivitas Admin
+      <div className="pb-4 border-b border-bone/10">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="w-1.5 h-1.5 bg-lime inline-block" />
+          <span className="text-[10px] font-mono text-lime uppercase tracking-[0.25em]">
+            AUDIT TELEMETRI // FORENSIC LOG
+          </span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-bone">
+          Log Investigasi & Aktivitas Admin
         </h1>
-        <p className="text-[#909296] text-sm font-[family-name:var(--font-space-mono)] mt-1">
-          Rekam jejak forensik seluruh operasi pembuatan, pengubahan, dan penghapusan data.
+        <p className="text-bone-dim text-xs font-mono mt-1">
+          Rekam jejak forensik seluruh operasi pembuatan, pengubahan, dan penghapusan data secara transparan.
         </p>
       </div>
 

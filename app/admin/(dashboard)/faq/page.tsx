@@ -29,12 +29,18 @@ export default async function FaqPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-[#F1F3F5] text-2xl font-bold font-[family-name:var(--font-nohemi)]">
-          Kelola FAQ (Tanya Jawab)
+      <div className="pb-4 border-b border-bone/10">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="w-1.5 h-1.5 bg-lime inline-block" />
+          <span className="text-[10px] font-mono text-lime uppercase tracking-[0.25em]">
+            BRIEFING ARCHIVE // INTEL TANYA JAWAB
+          </span>
+        </div>
+        <h1 className="text-2xl sm:text-3xl font-bold font-display tracking-tight text-bone">
+          Kelola Pertanyaan Umum (FAQ)
         </h1>
-        <p className="text-[#909296] text-sm font-[family-name:var(--font-space-mono)] mt-1">
-          Daftar pertanyaan yang tampil di bagian bawah halaman kontak website.
+        <p className="text-bone-dim text-xs font-mono mt-1">
+          Daftar penjelasan berkas, panduan pemesanan, custom sablon, dan informasi operasional publik.
         </p>
       </div>
 

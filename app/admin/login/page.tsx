@@ -3,6 +3,7 @@
 import { useFormState, useFormStatus } from "react-dom";
 import { loginAdmin, type AuthState } from "@/app/actions/admin/auth";
 import { useState } from "react";
+import Link from "next/link";
 
 function TombolMasuk() {
   const { pending } = useFormStatus();
@@ -10,20 +11,23 @@ function TombolMasuk() {
     <button
       type="submit"
       disabled={pending}
-      className="w-full py-3 px-6 bg-[#CDFF00] text-[#1A1B1E] font-bold uppercase tracking-widest
-                 hover:bg-[#b8e600] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-                 font-[family-name:var(--font-space-mono)] text-sm"
+      className="w-full py-3.5 px-6 bg-lime text-forest-deep font-bold uppercase tracking-widest
+                 hover:bg-lime/90 active:scale-[0.99] transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed
+                 font-mono text-xs flex items-center justify-center gap-2 shadow-[0_4px_20px_rgba(205,255,0,0.2)]"
     >
       {pending ? (
-        <span className="flex items-center justify-center gap-2">
-          <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+        <>
+          <svg className="animate-spin h-4 w-4 text-forest-deep" viewBox="0 0 24 24" fill="none">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          Memverifikasi...
-        </span>
+          <span>MEMVERIFIKASI OTORISASI...</span>
+        </>
       ) : (
-        "Masuk ke Markas"
+        <>
+          <span>BUKA ARSIP MARKAS</span>
+          <span className="font-display font-bold">→</span>
+        </>
       )}
     </button>
   );
@@ -34,58 +38,76 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#1A1B1E] flex items-center justify-center p-4">
-      {/* Background pattern */}
-      <div className="fixed inset-0 opacity-[0.03]" style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23CDFF00' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-      }} />
+    <div className="min-h-screen bg-forest-deep flex items-center justify-center p-4 relative overflow-hidden">
+      {/* Background Topographic / Forensic Grid Watermark */}
+      <div
+        className="absolute inset-0 opacity-[0.03] pointer-events-none"
+        style={{
+          backgroundImage: `radial-gradient(#CDFF00 1px, transparent 1px)`,
+          backgroundSize: "28px 28px",
+        }}
+      />
 
-      <div className="relative w-full max-w-md">
-        {/* Logo & branding */}
-        <div className="text-center mb-8">
-          <div className="inline-block mb-4">
-            <div className="w-16 h-16 border-2 border-[#CDFF00] flex items-center justify-center mx-auto">
-              <span className="text-[#CDFF00] font-bold text-2xl font-[family-name:var(--font-nohemi)]">ED</span>
-            </div>
-          </div>
-          <h1 className="text-[#F1F3F5] text-2xl font-bold font-[family-name:var(--font-nohemi)] tracking-tight">
-            euphoric.disorder
-          </h1>
-          <p className="text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-[0.3em] mt-2">
-            Markas Besar Administrasi
-          </p>
+      {/* Ambient Glow */}
+      <div className="absolute w-96 h-96 rounded-full bg-lime/5 blur-3xl pointer-events-none -top-20 -left-20" />
+      <div className="absolute w-96 h-96 rounded-full bg-forest/40 blur-3xl pointer-events-none -bottom-20 -right-20" />
+
+      <div className="relative w-full max-w-md z-10">
+        {/* Top telemetry banner */}
+        <div className="flex items-center justify-between text-[10px] font-mono text-bone-dim/60 mb-3 px-1">
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-lime animate-pulse inline-block" />
+            KLASIFIKASI: TERTUTUP // LEVEL 1
+          </span>
+          <span>ED-SYS-AUTH</span>
         </div>
 
-        {/* Form card */}
-        <div className="bg-[#25262B] border border-[#373A40] p-8">
-          {/* Header */}
-          <div className="mb-6">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-2 h-2 bg-[#CDFF00]" />
-              <span className="text-[#909296] text-[10px] font-[family-name:var(--font-space-mono)] uppercase tracking-[0.2em]">
-                Akses Terbatas
-              </span>
+        {/* Dossier Card Container */}
+        <div className="bg-forest border border-lime/30 p-8 sm:p-10 relative shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
+          {/* Tactical Corner Crosshairs */}
+          <div className="absolute top-2 left-2 text-lime/40 font-mono text-[10px] select-none">+</div>
+          <div className="absolute top-2 right-2 text-lime/40 font-mono text-[10px] select-none">+</div>
+          <div className="absolute bottom-2 left-2 text-lime/40 font-mono text-[10px] select-none">+</div>
+          <div className="absolute bottom-2 right-2 text-lime/40 font-mono text-[10px] select-none">+</div>
+
+          {/* Header Monogram & Brand */}
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center justify-center w-14 h-14 border border-lime bg-forest-deep mb-4 relative shadow-[0_0_15px_rgba(205,255,0,0.15)]">
+              <span className="text-lime font-display font-bold text-2xl tracking-tighter">ED</span>
+              <div className="absolute -bottom-1 -right-1 w-2 h-2 bg-lime" />
             </div>
-            <h2 className="text-[#F1F3F5] text-lg font-[family-name:var(--font-nohemi)]">
-              Masuk ke Panel Admin
-            </h2>
+
+            <h1 className="text-bone text-2xl font-bold font-display tracking-tight">
+              euphoric.disorder
+            </h1>
+            <div className="inline-block mt-2 px-2.5 py-0.5 border border-bone/15 bg-forest-deep/60">
+              <p className="text-lime text-[10px] font-mono uppercase tracking-[0.25em]">
+                MARKAS BESAR // KONTROL INVESTIGASI
+              </p>
+            </div>
           </div>
 
-          {/* Error message */}
+          {/* Error Banner */}
           {state?.error && (
-            <div className="mb-4 p-3 bg-[#FF6B6B]/10 border border-[#FF6B6B]/30 text-[#FF6B6B] text-sm font-[family-name:var(--font-space-mono)]">
-              ⚠ {state.error}
+            <div className="mb-6 p-3.5 bg-red-950/40 border border-red-500/50 text-red-400 text-xs font-mono flex items-start gap-2.5">
+              <span className="text-sm leading-none mt-0.5">⚠️</span>
+              <div>
+                <span className="font-bold uppercase tracking-wider block mb-0.5">[AKSES DITOLAK]</span>
+                {state.error}
+              </div>
             </div>
           )}
 
-          <form action={formAction} className="space-y-4">
-            {/* Email */}
+          {/* Credentials Form */}
+          <form action={formAction} className="space-y-5">
+            {/* Email Field */}
             <div>
               <label
                 htmlFor="email"
-                className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-2"
+                className="block text-bone-dim text-[11px] font-mono uppercase tracking-wider mb-2 flex items-center justify-between"
               >
-                Email
+                <span>Identitas Operator (Email)</span>
+                <span className="text-lime/60 text-[9px]">[WAJIB]</span>
               </label>
               <input
                 id="email"
@@ -94,21 +116,22 @@ export default function LoginPage() {
                 required
                 autoComplete="email"
                 autoFocus
-                placeholder="admin@euphoric.disorder"
-                className="w-full px-4 py-3 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5]
-                           font-[family-name:var(--font-space-mono)] text-sm
-                           placeholder:text-[#555] focus:outline-none focus:border-[#CDFF00]
+                placeholder="owner@euphoric.disorder"
+                className="w-full px-4 py-3 bg-forest-deep border border-bone/20 text-bone
+                           font-mono text-xs placeholder:text-bone-dim/30
+                           focus:outline-none focus:border-lime focus:ring-1 focus:ring-lime
                            transition-colors"
               />
             </div>
 
-            {/* Password */}
+            {/* Password Field */}
             <div>
               <label
                 htmlFor="password"
-                className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider mb-2"
+                className="block text-bone-dim text-[11px] font-mono uppercase tracking-wider mb-2 flex items-center justify-between"
               >
-                Kata Sandi
+                <span>Kunci Otorisasi (Kata Sandi)</span>
+                <span className="text-lime/60 text-[9px]">[ENCRYPTED]</span>
               </label>
               <div className="relative">
                 <input
@@ -117,32 +140,40 @@ export default function LoginPage() {
                   type={showPassword ? "text" : "password"}
                   required
                   autoComplete="current-password"
-                  placeholder="••••••••"
-                  className="w-full px-4 py-3 pr-12 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5]
-                             font-[family-name:var(--font-space-mono)] text-sm
-                             placeholder:text-[#555] focus:outline-none focus:border-[#CDFF00]
+                  placeholder="••••••••••••"
+                  className="w-full px-4 py-3 pr-16 bg-forest-deep border border-bone/20 text-bone
+                             font-mono text-xs placeholder:text-bone-dim/30
+                             focus:outline-none focus:border-lime focus:ring-1 focus:ring-lime
                              transition-colors"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#909296] hover:text-[#CDFF00] transition-colors text-xs font-[family-name:var(--font-space-mono)]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-bone-dim/60 hover:text-lime text-[10px] font-mono uppercase tracking-wider py-1 px-1.5 border border-bone/10 transition-colors"
                 >
                   {showPassword ? "HIDE" : "SHOW"}
                 </button>
               </div>
             </div>
 
-            <div className="pt-2">
+            <div className="pt-3">
               <TombolMasuk />
             </div>
           </form>
+
+          {/* Footer Card Info */}
+          <div className="mt-8 pt-5 border-t border-bone/10 flex items-center justify-between text-[10px] font-mono text-bone-dim/50">
+            <span>SECURE TERMINAL</span>
+            <Link href="/" className="hover:text-lime transition-colors">
+              Kembali ke Toko Publik ↗
+            </Link>
+          </div>
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-[#555] text-[10px] font-[family-name:var(--font-space-mono)] mt-6 uppercase tracking-wider">
-          © {new Date().getFullYear()} euphoric.disorder · Panel Admin v1.0
-        </p>
+        {/* Global Bottom Coordinates */}
+        <div className="text-center mt-6 text-[10px] font-mono text-bone-dim/40 tracking-widest uppercase">
+          JAKARTA // 6°09&apos;25.5&quot;S 106°50&apos;44.1&quot;E · ALL RIGHTS RESERVED
+        </div>
       </div>
     </div>
   );

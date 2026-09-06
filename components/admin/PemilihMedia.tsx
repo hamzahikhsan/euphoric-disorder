@@ -73,14 +73,21 @@ export default function PemilihMedia({
   };
 
   return (
-    <div className="space-y-2">
-      <label className="block text-[#909296] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider">
+    <div className="space-y-2 font-mono">
+      <label className="block text-bone-dim text-xs uppercase tracking-wider">
         {label}
       </label>
 
       <div className="flex gap-4 items-start">
-        {/* Thumbnail Preview */}
-        <div className="relative w-20 h-24 bg-[#1A1B1E] border border-[#373A40] flex items-center justify-center flex-shrink-0 overflow-hidden group">
+        {/* Thumbnail Preview with Forensic Scale Marks */}
+        <div className="relative w-20 h-24 bg-forest-deep border border-bone/20 flex items-center justify-center flex-shrink-0 overflow-hidden group">
+          {/* Scale Marks */}
+          <div className="absolute top-0 left-0 bottom-0 w-1 bg-lime/30 z-10 pointer-events-none flex flex-col justify-between py-1">
+            <span className="w-full h-px bg-forest-deep" />
+            <span className="w-full h-px bg-forest-deep" />
+            <span className="w-full h-px bg-forest-deep" />
+          </div>
+
           {value ? (
             <>
               {value.startsWith("/") || value.startsWith("http") ? (
@@ -92,20 +99,20 @@ export default function PemilihMedia({
                   unoptimized={value.startsWith("/")}
                 />
               ) : (
-                <div className="text-[10px] text-[#555] p-1 text-center font-[family-name:var(--font-space-mono)] break-all">
+                <div className="text-[10px] text-bone-dim p-1 text-center break-all">
                   {value}
                 </div>
               )}
               <button
                 type="button"
                 onClick={() => onChange("")}
-                className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 flex items-center justify-center text-[#FF6B6B] text-xs font-bold transition-opacity font-[family-name:var(--font-space-mono)]"
+                className="absolute inset-0 bg-forest-deep/80 opacity-0 group-hover:opacity-100 flex items-center justify-center text-red-400 text-xs font-bold transition-opacity"
               >
                 Hapus
               </button>
             </>
           ) : (
-            <span className="text-xl opacity-40">🖼️</span>
+            <span className="text-[10px] text-bone-dim/40 text-center px-1">[KOSONG]</span>
           )}
         </div>
 
@@ -116,12 +123,12 @@ export default function PemilihMedia({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="URL gambar atau path lokal (contoh: /img/products/candy-hoodie.png)"
-            className="w-full px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] placeholder:text-[#555] focus:outline-none focus:border-[#CDFF00] transition-colors"
+            className="w-full px-3 py-2 bg-forest-deep border border-bone/20 text-bone text-xs placeholder:text-bone-dim/30 focus:outline-none focus:border-lime transition-colors"
           />
 
-          <div className="flex items-center gap-2">
-            <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#25262B] border border-[#373A40] text-[#CDFF00] text-xs font-[family-name:var(--font-space-mono)] uppercase tracking-wider cursor-pointer hover:border-[#CDFF00] transition-colors">
-              <span>{uploading ? "Mengompres & Upload..." : "📁 Upload Foto"}</span>
+          <div className="flex items-center gap-3">
+            <label className="inline-flex items-center gap-2 px-3 py-1.5 bg-forest border border-lime/40 text-lime text-xs uppercase tracking-wider cursor-pointer hover:bg-lime hover:text-forest-deep font-bold transition-all">
+              <span>{uploading ? "Mengompres & Upload..." : "Upload Foto Bukti"}</span>
               <input
                 type="file"
                 accept="image/*"
@@ -132,15 +139,15 @@ export default function PemilihMedia({
             </label>
 
             {helperText && (
-              <span className="text-[10px] text-[#555] font-[family-name:var(--font-space-mono)]">
+              <span className="text-[10px] text-bone-dim/60">
                 {helperText}
               </span>
             )}
           </div>
 
           {uploadError && (
-            <p className="text-[10px] text-[#FF6B6B] font-[family-name:var(--font-space-mono)]">
-              ⚠ {uploadError}
+            <p className="text-[10px] text-red-400 bg-red-950/20 border border-red-500/30 p-2">
+              ⚠️ {uploadError}
             </p>
           )}
         </div>

@@ -44,7 +44,7 @@ export default function MessageInbox({ initialMessages }: MessageInboxProps) {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Hapus pesan ini secara permanen?")) return;
+    if (!confirm("Hapus berkas transmisi ini secara permanen?")) return;
     setMessages((prev) => prev.filter((m) => m.id !== id));
     await deleteMessage(id);
   };
@@ -64,27 +64,29 @@ export default function MessageInbox({ initialMessages }: MessageInboxProps) {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `pesan-pelanggan-${Date.now()}.csv`);
+    link.setAttribute("download", `euphoric-transmissions-${Date.now()}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
   return (
-    <div className="space-y-4">
-      {/* Search & Tabs */}
-      <div className="bg-[#25262B] border border-[#373A40] p-4 flex flex-wrap items-center justify-between gap-4">
-        {/* Search */}
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Cari nama, kontak, subjek pesan..."
-          className="w-full sm:w-72 px-3 py-2 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-xs font-[family-name:var(--font-space-mono)] focus:border-[#CDFF00] focus:outline-none"
-        />
+    <div className="space-y-4 font-mono">
+      {/* Search & Tabs Bar */}
+      <div className="bg-forest border border-bone/10 p-4 flex flex-wrap items-center justify-between gap-4">
+        {/* Search Input */}
+        <div className="w-full sm:w-80">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Cari pengirim, kontak, atau subjek..."
+            className="w-full px-3.5 py-2.5 bg-forest-deep border border-bone/20 text-bone text-xs placeholder:text-bone-dim/40 focus:border-lime focus:outline-none transition-colors"
+          />
+        </div>
 
-        {/* Status tabs */}
-        <div className="flex flex-wrap items-center gap-2 text-xs font-[family-name:var(--font-space-mono)]">
+        {/* Status Filter Tabs */}
+        <div className="flex flex-wrap items-center gap-2 text-xs">
           {[
             { id: "ALL", label: "Semua" },
             { id: "unread", label: "Belum Dibaca" },
@@ -94,10 +96,10 @@ export default function MessageInbox({ initialMessages }: MessageInboxProps) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as typeof activeTab)}
-              className={`px-3 py-1.5 border uppercase transition-colors ${
+              className={`px-3 py-1.5 uppercase transition-all ${
                 activeTab === tab.id
-                  ? "bg-[#CDFF00] text-[#1A1B1E] border-[#CDFF00] font-bold"
-                  : "bg-[#1A1B1E] text-[#909296] border-[#373A40] hover:text-[#F1F3F5]"
+                  ? "bg-lime text-forest-deep font-bold shadow-sm"
+                  : "bg-forest-deep text-bone-dim border border-bone/10 hover:text-bone hover:border-lime/40"
               }`}
             >
               {tab.label}
@@ -107,30 +109,31 @@ export default function MessageInbox({ initialMessages }: MessageInboxProps) {
           <button
             type="button"
             onClick={exportCSV}
-            className="px-3 py-1.5 border border-[#373A40] text-[#CDFF00] hover:border-[#CDFF00] font-bold uppercase transition-colors ml-2"
+            className="px-3.5 py-1.5 border border-bone/20 text-lime hover:border-lime text-xs font-bold uppercase transition-colors ml-auto sm:ml-2 flex items-center gap-1.5"
           >
-            📥 Ekspor CSV
+            <span>↓</span>
+            <span>Ekspor CSV</span>
           </button>
         </div>
       </div>
 
-      {/* Message List Table */}
-      <div className="bg-[#25262B] border border-[#373A40] overflow-x-auto">
-        <table className="w-full text-left text-xs font-[family-name:var(--font-space-mono)]">
-          <thead className="bg-[#1A1B1E] text-[#909296] border-b border-[#373A40] uppercase text-[10px] tracking-wider">
+      {/* Transmissions Table */}
+      <div className="bg-forest border border-bone/10 overflow-x-auto">
+        <table className="w-full text-left text-xs border-collapse">
+          <thead className="bg-forest-deep text-bone-dim border-b border-bone/10 uppercase text-[10px] tracking-wider">
             <tr>
-              <th className="py-3 px-4">Pengirim & Kontak</th>
-              <th className="py-3 px-4">Subjek & Pesan</th>
-              <th className="py-3 px-4">Status</th>
-              <th className="py-3 px-4">Waktu</th>
-              <th className="py-3 px-4 text-right">Aksi</th>
+              <th className="py-3.5 px-4">Pengirim & Kontak</th>
+              <th className="py-3.5 px-4">Subjek & Transmisi Pesan</th>
+              <th className="py-3.5 px-4">Status</th>
+              <th className="py-3.5 px-4">Waktu Terima</th>
+              <th className="py-3.5 px-4 text-right">Disposisi Cepat</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#373A40]">
+          <tbody className="divide-y divide-bone/10">
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-8 text-center text-[#555]">
-                  Tidak ada pesan pada filter ini.
+                <td colSpan={5} className="p-12 text-center text-bone-dim text-xs">
+                  Tidak ada transmisi pesan pada filter yang dipilih.
                 </td>
               </tr>
             ) : (
@@ -138,57 +141,59 @@ export default function MessageInbox({ initialMessages }: MessageInboxProps) {
                 const isPhone = /^\+?[0-9\s-]{8,15}$/.test(m.contact.trim());
                 const waUrl = isPhone
                   ? `https://wa.me/${cleanWhatsAppNumber(m.contact)}?text=${encodeURIComponent(
-                      `Halo ${m.name}, terima kasih telah menghubungi Euphoric Disorder mengenai pesan Anda: "${m.subject || "Pertanyaan"}"`
+                      `Halo ${m.name}, terima kasih telah menghubungi Markas euphoric.disorder perihal pesan Anda: "${m.subject || "Inquiry"}"`
                     )}`
                   : null;
 
                 return (
                   <tr
                     key={m.id}
-                    className={`hover:bg-[#2C2E33]/60 transition-colors ${
-                      m.status === "unread" ? "bg-[#CDFF00]/5 font-bold" : ""
+                    className={`hover:bg-forest-deep/60 transition-colors ${
+                      m.status === "unread" ? "bg-lime/[0.03]" : ""
                     }`}
                   >
                     {/* Sender */}
-                    <td className="py-3 px-4">
+                    <td className="py-3.5 px-4">
                       <div className="flex items-center gap-2">
                         {m.status === "unread" && (
-                          <span className="w-2 h-2 rounded-full bg-[#CDFF00] flex-shrink-0" />
+                          <span className="w-2 h-2 rounded-full bg-lime animate-pulse flex-shrink-0" />
                         )}
-                        <span className="text-[#F1F3F5]">{m.name}</span>
+                        <span className={`font-display text-sm ${m.status === "unread" ? "text-bone font-bold" : "text-bone-dim"}`}>
+                          {m.name}
+                        </span>
                       </div>
-                      <div className="text-[11px] text-[#909296] font-normal mt-0.5">
+                      <div className="text-[11px] text-bone-dim/60 mt-0.5">
                         {m.contact}
                       </div>
                     </td>
 
                     {/* Content */}
-                    <td className="py-3 px-4 max-w-xs sm:max-w-md">
+                    <td className="py-3.5 px-4 max-w-xs sm:max-w-md">
                       {m.subject && (
-                        <div className="text-[#CDFF00] text-xs mb-0.5 font-bold">
-                          {m.subject}
+                        <div className="text-lime text-xs mb-0.5 font-bold">
+                          [{m.subject}]
                         </div>
                       )}
-                      <p className="text-[#909296] text-xs truncate font-normal">
+                      <p className="text-bone-dim text-xs line-clamp-2">
                         {m.message}
                       </p>
                     </td>
 
-                    {/* Status */}
-                    <td className="py-3 px-4">
+                    {/* Status dropdown */}
+                    <td className="py-3.5 px-4">
                       <select
                         value={m.status}
                         onChange={(e) =>
                           handleStatusChange(m.id, e.target.value as MessageRow["status"])
                         }
-                        className={`px-2 py-1 text-[10px] uppercase font-bold bg-[#1A1B1E] border focus:outline-none ${
+                        className={`px-2.5 py-1 text-[10px] uppercase font-bold bg-forest-deep border focus:outline-none ${
                           m.status === "unread"
-                            ? "text-[#FF6B6B] border-[#FF6B6B]/40"
+                            ? "text-red-400 border-red-500/40 bg-red-950/20"
                             : m.status === "responded"
-                            ? "text-[#51CF66] border-[#51CF66]/40"
+                            ? "text-emerald-400 border-emerald-500/40 bg-emerald-950/20"
                             : m.status === "archived"
-                            ? "text-[#868E96] border-[#868E96]/40"
-                            : "text-[#74C0FC] border-[#74C0FC]/40"
+                            ? "text-bone-dim/60 border-bone/10"
+                            : "text-sky-300 border-sky-500/40 bg-sky-950/20"
                         }`}
                       >
                         <option value="unread">Belum Dibaca</option>
@@ -199,43 +204,47 @@ export default function MessageInbox({ initialMessages }: MessageInboxProps) {
                     </td>
 
                     {/* Time */}
-                    <td className="py-3 px-4 text-[#909296] text-[11px] font-normal whitespace-nowrap">
+                    <td className="py-3.5 px-4 text-bone-dim/60 text-[11px] whitespace-nowrap">
                       {new Date(m.created_at).toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "short",
                         year: "numeric",
+                        timeZone: "Asia/Jakarta",
                       })}
                     </td>
 
                     {/* Actions */}
-                    <td className="py-3 px-4 text-right space-x-2 whitespace-nowrap">
-                      {waUrl && (
-                        <a
-                          href={waUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-block px-2.5 py-1 bg-[#51CF66]/20 border border-[#51CF66]/50 text-[#51CF66] text-[10px] font-bold uppercase hover:bg-[#51CF66]/30 transition-colors"
-                          title="Balas ke WhatsApp pelanggan"
+                    <td className="py-3.5 px-4 text-right whitespace-nowrap">
+                      <div className="inline-flex items-center gap-2">
+                        {waUrl && (
+                          <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => handleStatusChange(m.id, "responded")}
+                            className="px-2.5 py-1 bg-emerald-950/30 border border-emerald-500/40 text-emerald-400 text-[10px] font-bold uppercase hover:bg-emerald-900/40 transition-colors"
+                            title="Disposisi ke WhatsApp"
+                          >
+                            WA Dispatch ↗
+                          </a>
+                        )}
+
+                        <Link
+                          href={`/admin/pesan/${m.id}`}
+                          className="px-2.5 py-1 bg-forest-deep border border-bone/20 text-bone hover:border-lime hover:text-lime text-[10px] uppercase transition-colors"
                         >
-                          💬 WA
-                        </a>
-                      )}
+                          Detail
+                        </Link>
 
-                      <Link
-                        href={`/admin/pesan/${m.id}`}
-                        className="inline-block px-2.5 py-1 bg-[#1A1B1E] border border-[#373A40] text-[#F1F3F5] text-[10px] uppercase hover:border-[#CDFF00] hover:text-[#CDFF00] transition-colors"
-                      >
-                        Detail
-                      </Link>
-
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(m.id)}
-                        className="px-2 py-1 text-[#FF6B6B] hover:bg-[#FF6B6B]/15 text-[11px] transition-colors"
-                        title="Hapus"
-                      >
-                        🗑️
-                      </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDelete(m.id)}
+                          className="px-2 py-1 text-red-400 hover:bg-red-950/30 border border-transparent hover:border-red-500/30 text-[11px] transition-colors"
+                          title="Musnahkan Transmisi"
+                        >
+                          ✕
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 );
